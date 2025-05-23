@@ -296,20 +296,3 @@ project_directory/
 
 MIT License. See `LICENSE` for details.
 
----
-
-### Notes
-
-- **Config Path**: Assumes `config.json` is in the project root, loaded via `PAIAConfig` with `__file__`-based path.
-- **Logging**: Guides users to `app.log` for debugging, with thread names for multi-threading clarity.
-- **Streaming**: Highlights `streamable: true` for `text-generator` and UI’s SSE handling.
-- **Debugging**: Provides specific commands and log checks for common issues.
-
-Please confirm if this `README.md` meets your needs or if you want additions (e.g., specific service details, API endpoints, or screenshots). If you’re still seeing “config.json not found”, share:
-
-- **app.log**: Full contents, especially `Attempting to load config`.
-- **CWD**: Output of `pwd` when running `server.py`.
-- **File Check**: Output of `ls -l config.json`.
-- **UI**: Dropdown contents, streaming behavior.
-
-I can refine the README or assist with further debugging!

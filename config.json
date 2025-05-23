@@ -1,0 +1,176 @@
+{
+  "server": {
+    "host": "localhost",
+    "port": 8000
+  },
+  "ui": {
+    "directory": "ui"
+  },
+  "services": {
+    "translate": {
+      "enabled": true,
+      "streamable": false,
+      "parameters": [
+        {
+          "name": "source_language",
+          "type": "select",
+          "label": "Source Language",
+          "options": [
+            {
+              "value": "cs",
+              "label": "Czech"
+            },
+            {
+              "value": "en",
+              "label": "English"
+            },
+            {
+              "value": "fr",
+              "label": "French"
+            },
+            {
+              "value": "de",
+              "label": "German"
+            }
+          ]
+        },
+        {
+          "name": "target_language",
+          "type": "select",
+          "label": "Target Language",
+          "options": [
+            {
+              "value": "cs",
+              "label": "Czech"
+            },
+            {
+              "value": "en",
+              "label": "English"
+            },
+            {
+              "value": "fr",
+              "label": "French"
+            },
+            {
+              "value": "de",
+              "label": "German"
+            }
+          ]
+        }
+      ]
+    },
+    "text-to-image": {
+      "enabled": true,
+      "streamable": false,
+      "parameters": [
+        {
+          "name": "height",
+          "type": "select",
+          "label": "Image Height",
+          "options": [
+            {
+              "value": 512,
+              "label": "512px"
+            },
+            {
+              "value": 768,
+              "label": "768px"
+            },
+            {
+              "value": 1024,
+              "label": "1024px"
+            }
+          ]
+        },
+        {
+          "name": "width",
+          "type": "select",
+          "label": "Image Width",
+          "options": [
+            {
+              "value": 512,
+              "label": "512px"
+            },
+            {
+              "value": 768,
+              "label": "768px"
+            },
+            {
+              "value": 1024,
+              "label": "1024px"
+            }
+          ]
+        },
+        {
+          "name": "guidance_scale",
+          "type": "slider",
+          "label": "Guidance Scale",
+          "min": 1.0,
+          "max": 20.0,
+          "step": 0.5,
+          "value": 8.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": "slider",
+          "label": "Inference Steps",
+          "min": 10,
+          "max": 100,
+          "step": 5,
+          "value": 20
+        },
+        {
+          "name": "negative_prompt",
+          "type": "textbox",
+          "label": "Negative Prompt",
+          "placeholder": "Enter negative prompt (e.g., ugly, low quality)",
+          "rows": 2
+        }
+      ]
+    },
+    "text-generator": {
+      "enabled": true,
+      "streamable": true,
+      "parameters": [
+        {
+          "name": "max_length",
+          "type": "select",
+          "label": "Max Length",
+          "options": [
+            {"value": 50, "label": "Short (50 tokens)"},
+            {"value": 100, "label": "Medium (100 tokens)"},
+            {"value": 200, "label": "Long (200 tokens)"}
+          ]
+        },
+        {
+          "name": "prefix",
+          "type": "text",
+          "label": "Custom Prefix",
+          "placeholder": "Enter a prefix (e.g., Story:)"
+        },
+        {
+          "name": "context",
+          "type": "textbox",
+          "label": "Context",
+          "placeholder": "Enter multi-line context or background",
+          "rows": 4
+        }
+      ]
+    },
+    "text-analyzer": {
+      "enabled": true,
+      "streamable": false,
+      "parameters": []
+    },
+    "sentiment-analyzer": {
+      "enabled": true,
+      "streamable": false,
+      "parameters": []
+    },
+    "text-summarizer": {
+      "enabled": true,
+      "streamable": false,
+      "parameters": []
+    }
+  }
+}

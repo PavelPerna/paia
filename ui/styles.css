@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.history {
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+.history-entry {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.history-entry.request {
+    background-color: #e6f3ff;
+}
+
+.history-entry.response {
+    background-color: #e6ffe6;
+}
+
+.history-entry.error {
+    background-color: #ffe6e6;
+}
+
+.history-entry img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.dynamic-selectors {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.dynamic-selectors select,
+.dynamic-selectors input[type="text"],
+.dynamic-selectors input[type="range"],
+.dynamic-selectors textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.dynamic-selectors label {
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.slider-value {
+    font-size: 14px;
+    width: 60px;
+    text-align: right;
+}
+
+#service-select, #query-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#query-input {
+    flex: 1;
+}
+
+#submit-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#submit-btn:hover {
+    background-color: #0056b3;
+}

@@ -1,0 +1,461 @@
+2025-05-23 20:56:06,232 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:56:06,233 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:56:06,234 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 20:56:06,235 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 20:56:13,591 [MainThread] INFO: Loading service: text-generator
+2025-05-23 20:56:13,592 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 20:56:15,085 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 20:56:15,085 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 20:56:15,086 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 20:56:15,086 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 20:56:15,748 [MainThread] INFO: Loading service: translate
+2025-05-23 20:56:15,749 [MainThread] INFO: Loaded service: translate
+2025-05-23 20:56:15,749 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:56:15,750 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:56:17,761 [MainThread] INFO: Port 8080 is available
+2025-05-23 20:56:17,761 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 20:56:17,763 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:56:17,764 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:56:17,764 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 20:56:18,776 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 20:56:23,951 [Thread-2 (process_request_thread)] DEBUG: GET request: /config
+2025-05-23 20:56:23,952 [Thread-2 (process_request_thread)] INFO: Returning config
+2025-05-23 20:56:23,953 [Thread-2 (process_request_thread)] DEBUG: Sent response: status=200, data={'server': {'host': 'localhost', 'port': 8000}, 'ui': {'directory': 'ui'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-23 20:56:24,202 [Thread-3 (process_request_thread)] DEBUG: GET request: /services
+2025-05-23 20:56:24,202 [Thread-3 (process_request_thread)] INFO: Returning services: ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-23 20:56:24,203 [Thread-3 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-23 20:56:33,615 [Thread-4 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 20:56:33,926 [Thread-5 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'fuck', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 20:56:33,926 [Thread-5 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 20:56:33,927 [Thread-5 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 20:56:33,927 [Thread-5 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 20:56:56,159 [Thread-5 (process_request_thread)] ERROR: Failed to load model: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 20:56:56,161 [Thread-5 (process_request_thread)] ERROR: Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 20:56:56,162 [Thread-5 (process_request_thread)] ERROR: Sent error: status=500, message=Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 20:58:52,721 [MainThread] INFO: Shutting down server...
+2025-05-23 20:58:56,840 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:58:56,841 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:58:56,842 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 20:58:56,842 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 20:59:03,109 [MainThread] INFO: Loading service: text-generator
+2025-05-23 20:59:03,109 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 20:59:04,640 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 20:59:04,640 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 20:59:04,642 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 20:59:04,642 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 20:59:05,290 [MainThread] INFO: Loading service: translate
+2025-05-23 20:59:05,290 [MainThread] INFO: Loaded service: translate
+2025-05-23 20:59:05,291 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:59:05,291 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:59:07,296 [MainThread] INFO: Port 8080 is available
+2025-05-23 20:59:07,297 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 20:59:07,299 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 20:59:07,299 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 20:59:07,300 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 20:59:08,304 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 20:59:14,462 [Thread-2 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 20:59:14,730 [Thread-3 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'fg', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 20:59:14,731 [Thread-3 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 20:59:14,731 [Thread-3 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 20:59:14,732 [Thread-3 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 20:59:38,750 [Thread-3 (process_request_thread)] ERROR: Failed to load model: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 20:59:38,752 [Thread-3 (process_request_thread)] ERROR: Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 20:59:38,755 [Thread-3 (process_request_thread)] ERROR: Sent error: status=500, message=Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 21:06:34,001 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:06:34,002 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:06:34,003 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:06:34,003 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:06:34,810 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:06:34,939 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:06:34,948 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:06:34,958 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:06:34,959 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:06:34,960 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:06:36,989 [MainThread] INFO: Port 8080 is available
+2025-05-23 21:06:36,990 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 21:06:36,991 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:06:36,992 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:06:36,994 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 21:06:38,007 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 21:12:28,255 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 21:12:28,256 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 21:12:28,257 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:12:28,258 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:12:32,788 [MainThread] INFO: Loading service: text-generator
+2025-05-23 21:12:32,788 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 21:12:34,232 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 21:12:34,232 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 21:12:34,233 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 21:12:34,234 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 21:12:34,886 [MainThread] INFO: Loading service: translate
+2025-05-23 21:12:34,887 [MainThread] INFO: Loaded service: translate
+2025-05-23 21:12:34,888 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 21:12:34,888 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 21:12:36,897 [MainThread] INFO: Port 8080 is available
+2025-05-23 21:12:36,897 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 21:12:36,899 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 21:12:36,900 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 21:12:36,900 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 21:12:37,913 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 21:12:40,570 [Thread-2 (process_request_thread)] DEBUG: GET request: /config
+2025-05-23 21:12:40,571 [Thread-2 (process_request_thread)] INFO: Returning config
+2025-05-23 21:12:40,571 [Thread-2 (process_request_thread)] DEBUG: Sent response: status=200, data={'server': {'host': 'localhost', 'port': 8000}, 'ui': {'directory': 'ui'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-23 21:12:40,830 [Thread-3 (process_request_thread)] DEBUG: GET request: /services
+2025-05-23 21:12:40,830 [Thread-3 (process_request_thread)] INFO: Returning services: ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-23 21:12:40,831 [Thread-3 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-23 21:12:48,240 [Thread-4 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 21:12:48,543 [Thread-5 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'Fuck', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 21:12:48,543 [Thread-5 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 21:12:48,544 [Thread-5 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 21:12:48,544 [Thread-5 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 21:13:06,174 [Thread-5 (process_request_thread)] ERROR: Failed to load model: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 21:13:06,175 [Thread-5 (process_request_thread)] ERROR: Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 21:13:06,177 [Thread-5 (process_request_thread)] ERROR: Sent error: status=500, message=Server error: cannot import name 'EncoderDecoderCache' from 'transformers' (C:\Users\Pavel\AppData\Local\Programs\Python\Python310\lib\site-packages\transformers\__init__.py)
+2025-05-23 21:19:56,573 [MainThread] INFO: Shutting down server...
+2025-05-23 21:20:13,215 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 21:20:13,221 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 21:20:13,251 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:20:13,252 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:20:13,278 [MainThread] ERROR: Error importing text_generator: No module named 'transformers'
+2025-05-23 21:20:13,305 [MainThread] ERROR: Error importing text_to_image: No module named 'diffusers'
+2025-05-23 21:20:13,333 [MainThread] ERROR: Error importing text_to_speech: No module named 'diffusers'
+2025-05-23 21:20:13,359 [MainThread] ERROR: Error importing translate: No module named 'transformers'
+2025-05-23 21:20:13,360 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 21:20:13,365 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 21:20:13,371 [MainThread] INFO: Port 8080 is available
+2025-05-23 21:20:13,372 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 21:20:13,373 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 21:20:13,379 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 21:20:13,408 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 21:20:14,389 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 21:20:21,418 [MainThread] INFO: Shutting down server...
+2025-05-23 21:56:57,630 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:56:57,631 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:56:57,632 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:56:57,633 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:56:58,313 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:56:58,437 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:56:58,444 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:56:58,455 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:56:58,456 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:56:58,457 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:00,462 [MainThread] INFO: Port 8080 is available
+2025-05-23 21:57:00,462 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 21:57:00,464 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:00,464 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:07,129 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:07,130 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:07,131 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:57:07,132 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:57:07,658 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:07,749 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:07,757 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:07,766 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:07,767 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:07,767 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:27,651 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:27,652 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:27,653 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 21:57:27,653 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 21:57:28,127 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:28,220 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:28,228 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:28,238 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 21:57:28,239 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:28,240 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 21:57:30,271 [MainThread] INFO: Port 8080 is available
+2025-05-23 21:57:30,271 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 21:57:30,272 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 21:57:30,273 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:21:26,203 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:21:26,204 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:21:26,205 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:21:26,205 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:21:26,839 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:21:26,958 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:21:26,968 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:21:26,980 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:21:26,981 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:21:26,982 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:21:29,006 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:21:29,007 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:21:29,008 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:21:29,009 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:21:29,010 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:21:30,016 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:22:32,345 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:22:32,346 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:22:32,347 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:22:32,347 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:23:03,619 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:23:03,619 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:23:08,976 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:23:08,977 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:23:08,978 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:23:08,979 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:23:09,428 [MainThread] INFO: Loading service: translate
+2025-05-23 23:23:09,429 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:23:09,429 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:09,430 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:11,447 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:23:11,447 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:23:11,448 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:11,449 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:11,450 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:23:15,676 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:15,677 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:15,678 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:23:15,678 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:23:16,150 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:23:16,240 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:23:16,246 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:23:16,255 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:23:16,256 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:16,256 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:18,281 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:23:18,281 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:23:18,282 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:18,283 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:18,284 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:23:19,293 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:23:27,262 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:27,262 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:27,263 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:23:27,264 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:23:32,410 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:23:32,410 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:23:33,503 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:23:33,504 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:23:33,505 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:23:33,506 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:23:33,579 [MainThread] INFO: Loading service: translate
+2025-05-23 23:23:33,579 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:23:33,580 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:33,581 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:35,595 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:23:35,595 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:23:35,597 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:23:35,597 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:23:35,598 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:23:36,602 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:24:13,986 [MainThread] INFO: Shutting down server...
+2025-05-23 23:24:28,101 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:24:28,101 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:24:28,103 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:24:28,104 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:24:33,646 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:24:33,646 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:24:34,820 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:24:34,821 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:24:34,822 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:24:34,822 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:24:34,901 [MainThread] INFO: Loading service: translate
+2025-05-23 23:24:34,901 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:24:34,902 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:24:34,903 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:24:36,919 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:24:36,919 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:24:36,921 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:24:36,921 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:24:36,922 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:24:37,930 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:25:42,089 [MainThread] INFO: Shutting down server...
+2025-05-23 23:33:16,743 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:33:16,744 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:33:16,745 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:33:16,746 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:33:21,933 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:33:21,934 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:33:23,049 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:33:23,049 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:33:23,050 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:33:23,051 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:33:23,124 [MainThread] INFO: Loading service: translate
+2025-05-23 23:33:23,125 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:33:23,125 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:33:23,126 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:33:25,160 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:33:25,160 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:33:25,162 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:33:25,162 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:33:25,163 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:33:26,165 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:33:51,432 [MainThread] INFO: Shutting down server...
+2025-05-23 23:34:49,354 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:34:49,355 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:34:49,356 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:34:49,357 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:34:54,510 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:34:54,510 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:34:55,622 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:34:55,623 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:34:55,624 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:34:55,624 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:34:55,699 [MainThread] INFO: Loading service: translate
+2025-05-23 23:34:55,699 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:34:55,700 [MainThread] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:34:55,701 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:34:57,715 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:34:57,715 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:34:57,717 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: H:\AI\services\paia\ai\..\config.json
+2025-05-23 23:34:57,717 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=H:\AI\services\paia\ai\..\ui
+2025-05-23 23:34:57,718 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:34:58,728 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:35:12,885 [MainThread] INFO: Shutting down server...
+2025-05-23 23:43:52,555 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:43:52,560 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:43:52,578 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:43:52,579 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:43:52,611 [MainThread] ERROR: Error importing text_generator: No module named 'transformers'
+2025-05-23 23:43:52,643 [MainThread] ERROR: Error importing text_to_image: No module named 'diffusers'
+2025-05-23 23:43:52,659 [MainThread] ERROR: Error importing text_to_speech: No module named 'diffusers'
+2025-05-23 23:43:52,675 [MainThread] ERROR: Error importing translate: No module named 'transformers'
+2025-05-23 23:43:52,676 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:43:52,681 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:43:52,685 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:43:52,686 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:43:52,687 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:43:52,693 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:43:52,696 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:43:53,689 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:44:01,986 [MainThread] INFO: Shutting down server...
+2025-05-23 23:46:04,234 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:46:04,239 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:46:04,250 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:46:04,251 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:46:07,339 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:46:07,340 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:46:09,086 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:46:09,086 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:46:09,097 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:46:09,098 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:46:09,148 [MainThread] INFO: Loading service: translate
+2025-05-23 23:46:09,149 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:46:09,150 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:46:09,155 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:46:09,157 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:46:09,158 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:46:09,159 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:46:09,165 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:46:09,168 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:46:10,161 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:46:23,416 [Thread-2 (process_request_thread)] DEBUG: GET request: /config
+2025-05-23 23:46:23,417 [Thread-2 (process_request_thread)] INFO: Returning config
+2025-05-23 23:46:23,418 [Thread-2 (process_request_thread)] DEBUG: Sent response: status=200, data={'server': {'host': 'localhost', 'port': 8000}, 'ui': {'directory': 'ui'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-23 23:46:23,684 [Thread-3 (process_request_thread)] DEBUG: GET request: /services
+2025-05-23 23:46:23,685 [Thread-3 (process_request_thread)] INFO: Returning services: ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-23 23:46:23,686 [Thread-3 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-23 23:46:30,156 [Thread-4 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 23:46:30,467 [Thread-5 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'Fuck ass', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 23:46:30,468 [Thread-5 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 23:46:30,469 [Thread-5 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 23:46:30,469 [Thread-5 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 23:49:24,244 [Thread-5 (process_request_thread)] INFO: TextToImageService initialized with stable-diffusion-v1-5/stable-diffusion-v1-5
+2025-05-23 23:49:24,258 [Thread-5 (process_request_thread)] DEBUG: Processing query: prompt='Fuck ass', height=512, width=512, guidance_scale=8.0, num_inference_steps=20, negative_prompt=''
+2025-05-23 23:49:26,393 [Thread-5 (process_request_thread)] INFO: Generated image: http://localhost:8080/image/Fuck ass_Thread-5 (process_request_thread).png
+2025-05-23 23:49:26,401 [Thread-5 (process_request_thread)] DEBUG: Sent response: status=200, data={'result': 'http://localhost:8080/image/Fuck ass_Thread-5 (process_request_thread).png', 'type': 'image'}
+2025-05-23 23:52:54,914 [Thread-9 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 23:52:55,175 [Thread-10 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'nsfw horse', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 23:52:55,177 [Thread-10 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 23:52:55,178 [Thread-10 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 23:52:55,178 [Thread-10 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 23:53:01,689 [Thread-10 (process_request_thread)] INFO: TextToImageService initialized with stable-diffusion-v1-5/stable-diffusion-v1-5
+2025-05-23 23:53:01,692 [Thread-10 (process_request_thread)] DEBUG: Processing query: prompt='nsfw horse', height=512, width=512, guidance_scale=8.0, num_inference_steps=20, negative_prompt=''
+2025-05-23 23:53:02,914 [Thread-10 (process_request_thread)] INFO: Generated image: http://localhost:8080/image/nsfw horse_Thread-10 (process_request_thread).png
+2025-05-23 23:53:02,915 [Thread-10 (process_request_thread)] DEBUG: Sent response: status=200, data={'result': 'http://localhost:8080/image/nsfw horse_Thread-10 (process_request_thread).png', 'type': 'image'}
+2025-05-23 23:56:58,138 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:56:58,139 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:56:58,140 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:56:58,140 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:56:59,199 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:56:59,340 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:56:59,347 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:56:59,356 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-23 23:56:59,356 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:56:59,357 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:57:01,375 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:57:01,375 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:57:01,376 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-23 23:57:01,377 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-23 23:57:01,378 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:57:02,382 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:57:22,004 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:57:22,009 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:57:22,020 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-23 23:57:22,021 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-23 23:57:26,091 [MainThread] INFO: Loading service: text-generator
+2025-05-23 23:57:26,092 [MainThread] INFO: Loaded service: text-generator
+2025-05-23 23:57:27,977 [MainThread] INFO: Loading service: text-to-image
+2025-05-23 23:57:27,978 [MainThread] INFO: Loaded service: text-to-image
+2025-05-23 23:57:27,989 [MainThread] INFO: Loading service: text-to-speech
+2025-05-23 23:57:27,990 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-23 23:57:28,062 [MainThread] INFO: Loading service: translate
+2025-05-23 23:57:28,064 [MainThread] INFO: Loaded service: translate
+2025-05-23 23:57:28,065 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:57:28,069 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:57:28,070 [MainThread] INFO: Port 8080 is available
+2025-05-23 23:57:28,071 [MainThread] INFO: Starting UI server in separate thread
+2025-05-23 23:57:28,072 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-23 23:57:28,077 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-23 23:57:28,080 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-23 23:57:29,075 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-23 23:58:17,449 [Thread-2 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-23 23:58:17,717 [Thread-3 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'horse', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-23 23:58:17,718 [Thread-3 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-23 23:58:17,719 [Thread-3 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-23 23:58:17,720 [Thread-3 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-23 23:58:22,953 [Thread-3 (process_request_thread)] INFO: TextToImageService initialized with stable-diffusion-v1-5/stable-diffusion-v1-5
+2025-05-23 23:58:22,977 [Thread-3 (process_request_thread)] DEBUG: Processing query: prompt='horse', height=512, width=512, guidance_scale=8.0, num_inference_steps=20, negative_prompt=''
+2025-05-23 23:58:25,304 [Thread-3 (process_request_thread)] INFO: Generated image: http://localhost:8080/ui/image/horse_Thread-3 (process_request_thread).png
+2025-05-23 23:58:25,318 [Thread-3 (process_request_thread)] DEBUG: Sent response: status=200, data={'result': 'http://localhost:8080/ui/image/horse_Thread-3 (process_request_thread).png', 'type': 'image'}
+2025-05-24 00:26:06,914 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-24 00:26:06,915 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-24 00:26:06,916 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-24 00:26:06,916 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-24 00:26:07,410 [MainThread] ERROR: Error loading text-generator: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-24 00:26:07,513 [MainThread] ERROR: Error loading text-to-image: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-24 00:26:07,520 [MainThread] ERROR: Error loading text-to-speech: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-24 00:26:07,529 [MainThread] ERROR: Error loading translate: [WinError 127] The specified procedure could not be found. Error loading "H:\AI\services\paia\env\lib\site-packages\torch\lib\c10_cuda.dll" or one of its dependencies.
+2025-05-24 00:26:07,530 [MainThread] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-24 00:26:07,531 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-24 00:26:09,563 [MainThread] INFO: Port 8080 is available
+2025-05-24 00:26:09,563 [MainThread] INFO: Starting UI server in separate thread
+2025-05-24 00:26:09,564 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: h:\AI\services\paia\ai\..\config.json
+2025-05-24 00:26:09,565 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=h:\AI\services\paia\ai\..\ui
+2025-05-24 00:26:09,566 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-24 00:26:10,580 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-24 00:26:31,729 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-24 00:26:31,734 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-24 00:26:31,745 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-24 00:26:31,746 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-24 00:26:35,117 [MainThread] INFO: Loading service: text-generator
+2025-05-24 00:26:35,118 [MainThread] INFO: Loaded service: text-generator
+2025-05-24 00:26:36,874 [MainThread] INFO: Loading service: text-to-image
+2025-05-24 00:26:36,875 [MainThread] INFO: Loaded service: text-to-image
+2025-05-24 00:26:36,887 [MainThread] INFO: Loading service: text-to-speech
+2025-05-24 00:26:36,888 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-24 00:26:36,954 [MainThread] INFO: Loading service: translate
+2025-05-24 00:26:36,955 [MainThread] INFO: Loaded service: translate
+2025-05-24 00:26:36,956 [MainThread] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-24 00:26:36,961 [MainThread] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-24 00:26:36,963 [MainThread] INFO: Port 8080 is available
+2025-05-24 00:26:36,964 [MainThread] INFO: Starting UI server in separate thread
+2025-05-24 00:26:36,965 [Thread-1 (start_ui_server)] DEBUG: Attempting to load config from: /mnt/h/AI/services/paia/ai/../config.json
+2025-05-24 00:26:36,970 [Thread-1 (start_ui_server)] INFO: Loaded config: host=localhost, port=8000, ui_dir=/mnt/h/AI/services/paia/ai/../ui
+2025-05-24 00:26:36,973 [Thread-1 (start_ui_server)] INFO: UI server running at http://localhost:8080
+2025-05-24 00:26:37,971 [MainThread] INFO: Main server running at http://localhost:8000
+2025-05-24 00:26:45,752 [Thread-2 (process_request_thread)] DEBUG: GET request: /config
+2025-05-24 00:26:45,753 [Thread-2 (process_request_thread)] INFO: Returning config
+2025-05-24 00:26:45,754 [Thread-2 (process_request_thread)] DEBUG: Sent response: status=200, data={'server': {'host': 'localhost', 'port': 8000}, 'ui': {'directory': 'ui'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-24 00:26:46,004 [Thread-3 (process_request_thread)] DEBUG: GET request: /services
+2025-05-24 00:26:46,005 [Thread-3 (process_request_thread)] INFO: Returning services: ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-24 00:26:46,006 [Thread-3 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['sentiment-analyzer', 'text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-24 00:26:53,443 [Thread-4 (process_request_thread)] DEBUG: OPTIONS request
+2025-05-24 00:26:53,752 [Thread-5 (process_request_thread)] DEBUG: Received POST: {'service': 'text-to-image', 'query': {'text': 'Horse', 'height': '512', 'width': '512', 'guidance_scale': 8, 'num_inference_steps': 20, 'negative_prompt': ''}, 'stream': False}
+2025-05-24 00:26:53,753 [Thread-5 (process_request_thread)] DEBUG: Retrieved service: text-to-image
+2025-05-24 00:26:53,754 [Thread-5 (process_request_thread)] INFO: Processing text-to-image, stream=False
+2025-05-24 00:26:53,754 [Thread-5 (process_request_thread)] INFO: Non-streaming for: text-to-image
+2025-05-24 00:30:52,726 [Thread-5 (process_request_thread)] INFO: TextToImageService initialized with Heartsync/NSFW-Uncensored
+2025-05-24 00:30:52,734 [Thread-5 (process_request_thread)] DEBUG: Processing query: prompt='Horse', height=512, width=512, guidance_scale=8.0, num_inference_steps=20, negative_prompt=''
+2025-05-24 00:30:53,475 [Thread-5 (process_request_thread)] ERROR: Error in image generation: argument of type 'NoneType' is not iterable
+2025-05-24 00:30:53,490 [Thread-5 (process_request_thread)] DEBUG: Sent response: status=200, data={'error': "Image generation failed: argument of type 'NoneType' is not iterable"}

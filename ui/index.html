@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Microservice UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Microservice Query</h1>
+        <div id="history" class="history"></div>
+        <div class="input-section">
+            <select id="service-select">
+                <option value="" disabled selected>Select a service</option>
+            </select>
+            <div id="dynamic-selectors" class="dynamic-selectors"></div>
+            <input type="text" id="query-input" placeholder="Enter your query">
+            <button id="submit-btn">Submit</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

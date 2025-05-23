@@ -1,7 +1,3 @@
-Below is a `README.md` for your project, designed to provide clear instructions and context for setup, usage, and debugging. It reflects your current setup: a multi-threaded AI microservice application with a UI server in a separate thread, `PAIAConfig` and `PAIALogger` singletons, `self.translators` in `translate.py`, `"textbox"` and `"slider"` inputs, text generation via `TextGenerationService`, and logging to `app.log`. The README addresses the "config/services not loading" and "streaming not visible" issues, assumes `config.json` is in the project root, and is written explicitly and concisely.
-
----
-
 # AI Microservice Application
 
 This is a multi-threaded Python application providing AI microservices (e.g., text generation, translation) via a web UI. It uses a REST API (`localhost:8000`) and a separate UI server (`localhost:8080`), with configuration managed by a singleton (`PAIAConfig`) and logging via `PAIALogger` to `app.log`.

@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: ${config.ui.theme === 'dark' ? '#333' : '#f4f4f4'};
 }
 
 .container {
@@ -33,6 +33,9 @@ h1 {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .history-entry.request {
@@ -54,10 +57,23 @@ h1 {
     margin-top: 5px;
 }
 
+.history-entry .play-btn {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.history-entry .play-btn:hover {
+    background-color: #218838;
+}
+
 .input-section {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 .dynamic-selectors {
@@ -93,15 +109,50 @@ h1 {
     text-align: right;
 }
 
-#service-select, #query-input {
+#service-select {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
+.query-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 #query-input {
     flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#file-upload {
+    padding: 10px;
+}
+
+#mic-btn {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#mic-btn.recording {
+    background-color: #dc3545;
+}
+
+#mic-btn:hover {
+    background-color: #0056b3;
+}
+
+#mic-btn.recording:hover {
+    background-color: #c82333;
 }
 
 #submit-btn {

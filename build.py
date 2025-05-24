@@ -1,43 +1,40 @@
 # build_ui.py
 import os
 import json
-
-try:
-    with open("config.json", "r") as f:
-        config = json.load(f)
-    UI_DIR = config["ui"]["directory"]
-except FileNotFoundError:
-    print("Error: config.json not found, using default UI directory 'ui'")
-    UI_DIR = "ui"
-except (KeyError, json.JSONDecodeError) as e:
-    print(f"Error: Invalid config.json, using default UI directory 'ui': {str(e)}")
-    UI_DIR = "ui"
+from ai import PAIA_LOGGER,PAIA_CONFIG
+# Initialize logger with config from PAIAConfig
+UI_DIR = PAIA_CONFIG.ui_dir
 
 os.makedirs(UI_DIR, exist_ok=True)
-os.makedirs(os.path.join(UI_DIR, "image"), exist_ok=True)  # Ensure image directory
+os.makedirs(os.path.join(UI_DIR, "image"), exist_ok=True)
 
 INDEX_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Microservice UI</title>
+    <title>PAIA - AI Microservice UI</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>AI Microservice Query</h1>
+        <h1>PAIA AI Microservice</h1>
         <div id="history" class="history"></div>
         <div class="input-section">
             <select id="service-select">
                 <option value="" disabled selected>Select a service</option>
             </select>
             <div id="dynamic-selectors" class="dynamic-selectors"></div>
-            <input type="text" id="query-input" placeholder="Enter your query">
+            <div class="query-container">
+                <input type="text" id="query-input" placeholder="Enter your query">
+                <input type="file" id="file-upload" accept=".txt" title="Upload a text file">
+                <button id="mic-btn" title="Record voice input">Voice</button>
+            </div>
             <button id="submit-btn">Submit</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="api.js" type="module"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
 """
@@ -46,7 +43,7 @@ STYLES_CSS = """body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: ${config.ui.theme === 'dark' ? '#333' : '#f4f4f4'};
 }
 
 .container {
@@ -77,6 +74,9 @@ h1 {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .history-entry.request {
@@ -98,10 +98,23 @@ h1 {
     margin-top: 5px;
 }
 
+.history-entry .play-btn {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.history-entry .play-btn:hover {
+    background-color: #218838;
+}
+
 .input-section {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 .dynamic-selectors {
@@ -137,15 +150,50 @@ h1 {
     text-align: right;
 }
 
-#service-select, #query-input {
+#service-select {
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
 }
 
+.query-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
 #query-input {
     flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#file-upload {
+    padding: 10px;
+}
+
+#mic-btn {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#mic-btn.recording {
+    background-color: #dc3545;
+}
+
+#mic-btn:hover {
+    background-color: #0056b3;
+}
+
+#mic-btn.recording:hover {
+    background-color: #c82333;
 }
 
 #submit-btn {
@@ -162,60 +210,166 @@ h1 {
 }
 """
 
-SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
-    const serviceSelect = document.getElementById('service-select');
-    const dynamicSelectors = document.getElementById('dynamic-selectors');
-    const queryInput = document.getElementById('query-input');
-    const submitBtn = document.getElementById('submit-btn');
-    const historyDiv = document.getElementById('history');
-    let config = {};
-    let serverUrl = 'http://localhost:8000';
-
-    async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
-        for (let i = 0; i < retries; i++) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                return response;
-            } catch (error) {
-                console.error(`Fetch attempt ${i+1} failed for ${url}: ${error.message}`);
-                if (i === retries - 1) {
-                    addToHistory(`Error: ${error.message} for ${url}`, 'error');
-                    throw error;
-                }
-                await new Promise(resolve => setTimeout(resolve, delay));
-            }
-        }
-    }
-
-    try {
-        const configResponse = await fetchWithRetry('http://localhost:8000/config', { method: 'GET' });
-        config = await configResponse.json();
-        serverUrl = `http://${config.server.host}:${config.server.port}`;
-        console.log(`Server URL: ${serverUrl}`);
-    } catch (error) {
-        console.error(`Config fetch error: ${error.message}`);
-        addToHistory(`Error: Failed to load config - ${error.message}`, 'error');
-    }
-
+API_JS = """// ui/api.js
+export async function fetchServices(serverUrl) {
     try {
         const response = await fetchWithRetry(`${serverUrl}/services`, { method: 'GET' });
         const data = await response.json();
         console.log(`Services fetched: ${data.services}`);
-        if (!data.services.length) {
+        return data.services;
+    } catch (error) {
+        console.error(`Services fetch error: ${error.message}`);
+        throw error;
+    }
+}
+
+export async function fetchConfig(serverUrl) {
+    try {
+        const response = await fetchWithRetry(`${serverUrl}/config`, { method: 'GET' });
+        const data = await response.json();
+        console.log(`Config fetched: ${JSON.stringify(data)}`);
+        return data;
+    } catch (error) {
+        console.error(`Config fetch error: ${error.message}`);
+        throw error;
+    }
+}
+
+export async function queryService(serverUrl, payload) {
+    try {
+        const response = await fetch(serverUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response;
+    } catch (error) {
+        console.error(`Query error: ${error.message}`);
+        throw error;
+    }
+}
+
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            return response;
+        } catch (error) {
+            console.error(`Fetch attempt ${i+1} failed for ${url}: ${error.message}`);
+            if (i === retries - 1) throw error;
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+}
+"""
+
+SCRIPT_JS = """// ui/script.js
+import { fetchServices, fetchConfig, queryService } from './api.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const serviceSelect = document.getElementById('service-select');
+    const dynamicSelectors = document.getElementById('dynamic-selectors');
+    const queryInput = document.getElementById('query-input');
+    const fileUpload = document.getElementById('file-upload');
+    const micBtn = document.getElementById('mic-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const historyDiv = document.getElementById('history');
+    let config = {};
+    let serverUrl = 'http://localhost:8000';
+    let recognition = null;
+    let isRecording = false;
+
+    // Initialize Speech Recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        recognition.onresult = (event) => {
+            const transcript = Array.from(event.results)
+                .map(result => result[0].transcript)
+                .join('');
+            queryInput.value = transcript;
+        };
+        recognition.onend = () => {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micBtn.textContent = 'Voice';
+        };
+        recognition.onerror = (event) => {
+            console.error(`Speech recognition error: ${event.error}`);
+            addToHistory(`Error: Speech recognition failed - ${event.error}`, 'error');
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micBtn.textContent = 'Voice';
+        };
+    } else {
+        micBtn.disabled = true;
+        micBtn.title = 'Speech recognition not supported';
+    }
+
+    // File Upload Handler
+    fileUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file && file.type === 'text/plain') {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                queryInput.value = e.target.result;
+                addToHistory(`File uploaded: ${file.name}`, 'request');
+            };
+            reader.onerror = () => {
+                addToHistory('Error: Failed to read file', 'error');
+            };
+            reader.readAsText(file);
+        } else {
+            addToHistory('Error: Please upload a .txt file', 'error');
+        }
+        fileUpload.value = ''; // Reset input
+    });
+
+    // Microphone Button Handler
+    micBtn.addEventListener('click', () => {
+        if (!recognition) return;
+        if (isRecording) {
+            recognition.stop();
+        } else {
+            queryInput.value = '';
+            recognition.start();
+            isRecording = true;
+            micBtn.classList.add('recording');
+            micBtn.textContent = 'Stop';
+        }
+    });
+
+    // Load Config and Services
+    try {
+        config = await fetchConfig(serverUrl);
+        serverUrl = `http://${config.server.host}:${config.server.port}`;
+    } catch (error) {
+        addToHistory(`Error: Failed to load config - ${error.message}`, 'error');
+    }
+
+    try {
+        const services = await fetchServices(serverUrl);
+        if (!services.length) {
             addToHistory('Error: No services available', 'error');
         }
-        data.services.forEach(service => {
+        services.forEach(service => {
             const option = document.createElement('option');
             option.value = service;
             option.textContent = service.replace(/-/g, ' ').toUpperCase();
             serviceSelect.appendChild(option);
         });
     } catch (error) {
-        console.error(`Services fetch error: ${error.message}`);
         addToHistory(`Error: Failed to load services - ${error.message}`, 'error');
     }
 
+    // Service Selection Handler
     serviceSelect.addEventListener('change', () => {
         dynamicSelectors.innerHTML = '';
         const service = serviceSelect.value;
@@ -282,6 +436,7 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // Submit Handler
     submitBtn.addEventListener('click', async () => {
         const service = serviceSelect.value;
         const queryText = queryInput.value.trim();
@@ -315,15 +470,7 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
         console.log(`Sending payload: ${JSON.stringify(payload)}`);
 
         try {
-            const response = await fetch(serverUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
+            const response = await queryService(serverUrl, payload);
 
             if (payload.stream) {
                 console.log(`Initiating streaming for ${service}`);
@@ -340,7 +487,7 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
 
                         const chunk = new TextDecoder().decode(value);
                         console.log(`Received chunk: ${chunk}`);
-                        const lines = chunk.split('\\n\\n');
+                        const lines = chunk.split("\\n\\n");
                         for (const line of lines) {
                             if (line.startsWith('data: ')) {
                                 try {
@@ -348,18 +495,10 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
                                     console.log(`Parsed SSE event: ${JSON.stringify(data)}`);
                                     if (data.result) {
                                         if (!responseEntry) {
-                                            responseEntry = document.createElement('div');
-                                            responseEntry.className = 'history-entry response';
+                                            responseEntry = createResponseEntry(data.result);
                                             historyDiv.insertBefore(responseEntry, historyDiv.firstChild);
-                                        }
-                                        if (data.type === 'image') {
-                                            const img = document.createElement('img');
-                                            img.src = data.result;
-                                            img.alt = 'Generated image';
-                                            responseEntry.innerHTML = '';
-                                            responseEntry.appendChild(img);
                                         } else {
-                                            responseEntry.textContent = `Response: ${data.result}`;
+                                            responseEntry.querySelector('.response-text').textContent = `Response: ${data.result}`;
                                         }
                                         historyDiv.scrollTop = 0;
                                         console.log(`Displayed: ${data.result}`);
@@ -382,17 +521,8 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
                 });
             } else {
                 const data = await response.json();
-                if (data.type === 'image') {
-                    const entry = document.createElement('div');
-                    entry.className = 'history-entry response';
-                    const img = document.createElement('img');
-                    img.src = data.result;
-                    img.alt = 'Generated image';
-                    entry.appendChild(img);
-                    historyDiv.insertBefore(entry, historyDiv.firstChild);
-                } else {
-                    addToHistory(`Response: ${data.result || JSON.stringify(data)}`, 'response');
-                }
+                const entry = createResponseEntry(data.result || JSON.stringify(data));
+                historyDiv.insertBefore(entry, historyDiv.firstChild);
             }
         } catch (error) {
             console.log(`Request error: ${error.message}`);
@@ -401,6 +531,26 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
 
         queryInput.value = '';
     });
+
+    function createResponseEntry(text) {
+        const entry = document.createElement('div');
+        entry.className = 'history-entry response';
+        const textSpan = document.createElement('span');
+        textSpan.className = 'response-text';
+        textSpan.textContent = `Response: ${text}`;
+        const playBtn = document.createElement('button');
+        playBtn.className = 'play-btn';
+        playBtn.textContent = 'Play';
+        playBtn.title = 'Play response';
+        playBtn.addEventListener('click', () => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        });
+        entry.appendChild(textSpan);
+        entry.appendChild(playBtn);
+        return entry;
+    }
 
     function addToHistory(message, type) {
         const entry = document.createElement('div');
@@ -416,13 +566,14 @@ SCRIPT_JS = """document.addEventListener('DOMContentLoaded', async () => {
 """
 
 def write_file(filepath, content):
+    PAIA_LOGGER.info(f"Generating {filepath}")
     with open(filepath, 'w') as f:
         f.write(content)
-    print(f"Generated {filepath}")
 
 def build_ui():
     write_file(os.path.join(UI_DIR, "index.html"), INDEX_HTML)
     write_file(os.path.join(UI_DIR, "styles.css"), STYLES_CSS)
+    write_file(os.path.join(UI_DIR, "api.js"), API_JS)
     write_file(os.path.join(UI_DIR, "script.js"), SCRIPT_JS)
 
 if __name__ == "__main__":

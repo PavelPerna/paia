@@ -1,6 +1,9 @@
 # ai/__init__.py
-__all__ = ["config", "logger", "microservice","singleton"]
+__all__ = ["PAIASingleton", "PAIAConfig","PAIALogger","PAIA_CONFIG","PAIA_LOGGER"]
 
-from .config import PAIAConfig
-from .logger import PAIALogger
 from .singleton import PAIASingleton
+from .config import PAIAConfig, PAIA_CONFIG
+from .logger import PAIALogger, PAIA_LOGGER
+
+
+

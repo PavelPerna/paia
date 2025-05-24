@@ -1,12 +1,9 @@
 # ai/microservice/text_generator.py
 from .base_service import AIMicroService
 from diffusers import DiffusionPipeline
-from ai.logger import PAIALogger
+from ai import *
 import threading
 import os
-import torch
-
-logger = PAIALogger().get()
 
 class TextToSpeechService(AIMicroService):
     def __init__(self):
@@ -18,10 +15,10 @@ class TextToSpeechService(AIMicroService):
             self.imager = DiffusionPipeline.from_pretrained(
                 model_id
             ).to("cuda")
-            logger.info(f"TextToImageService initialized with {model_id}")
+            PAIA_LOGGER.info(f"TextToImageService initialized with {model_id}")
             self.modelLoaded = True
         except Exception as e:
-            logger.error(f"Failed to load model: {str(e)}")
+            PAIA_LOGGER.error(f"Failed to load model: {str(e)}")
             raise
 
     def process(self, query):
@@ -34,10 +31,10 @@ class TextToSpeechService(AIMicroService):
         guidance_scale = float(query.get("guidance_scale", 8.0))
         num_inference_steps = int(query.get("num_inference_steps", 20))
         negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
-        logger.debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
+        PAIA_LOGGER.debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
 
         if not prompt:
-            logger.error("No prompt provided")
+            PAIA_LOGGER.error("No prompt provided")
             yield {"error": "No prompt provided for image generation"}
             return
 
@@ -59,11 +56,11 @@ class TextToSpeechService(AIMicroService):
 
             result.save(image_path)
             image_url = f"http://localhost:8080/image/{safe_prompt}_{threading.current_thread().name}.png"
-            logger.info(f"Generated image: {image_url}")
+            PAIA_LOGGER.info(f"Generated image: {image_url}")
             yield {"result": image_url, "type": "image"}
 
         except Exception as e:
-            logger.error(f"Error in image generation: {str(e)}")
+            PAIA_LOGGER.error(f"Error in image generation: {str(e)}")
             yield {"error": f"Image generation failed: {str(e)}"}
 
-        logger.debug("End thread")
+        PAIA_LOGGER.debug("End thread")

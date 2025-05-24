@@ -2,3 +2,6 @@ env
 env/*
 linenv
 linenv/*
+ui/image/*
+hug.key
+.pyc

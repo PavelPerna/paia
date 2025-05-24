@@ -1,28 +1,26 @@
 # ai/microservice/text_generator.py
 from .base_service import AIMicroService
-from diffusers import StableDiffusionPipeline
-from ai.logger import PAIALogger
+from transformers import pipeline, AutoModel, AutoTokenizer
+from ai import *
 import threading
 import os
 import torch
-
-logger = PAIALogger().get()
 
 class TextToImageService(AIMicroService):
     def __init__(self):
         self.modelLoaded = False
 
     def loadModel(self):
-        model_id = "stable-diffusion-v1-5/stable-diffusion-v1-5"
-        model_id = "Heartsync/NSFW-Uncensored"
         try:
-            self.imager = StableDiffusionPipeline.from_pretrained(
-                model_id, torch_dtype=torch.float16,use_safetensors=True
-            ).to("cuda")
-            logger.info(f"TextToImageService initialized with {model_id}")
+            model_id = "stablediffusionapi/uber-realistic-porn-merge"
+            PAIA_LOGGER.info(f"Loading model : {model_id}")
+            self.model = AutoModel.from_pretrained(model_id).to("cuda")
+            self.tokenizer = AutoTokenizer.from_pretrained(model_id)
+            self.imager = pipeline(model=self.model,torch_dtype=torch.float16,trust_remote_code=True,tokenizer=self.tokenizer)
+            PAIA_LOGGER.info(f"TextToImageService initialized with { self.model}")
             self.modelLoaded = True
         except Exception as e:
-            logger.error(f"Failed to load model: {str(e)}")
+            PAIA_LOGGER.error(f"Failed to load model: {str(e)}")
             raise
 
     def process(self, query):
@@ -30,15 +28,15 @@ class TextToImageService(AIMicroService):
             self.loadModel()
 
         prompt = query.get("text", "")
-        height = int(query.get("height", 512))
-        width = int(query.get("width", 512))
-        guidance_scale = float(query.get("guidance_scale", 8.0))
-        num_inference_steps = int(query.get("num_inference_steps", 20))
+        height = int(query.get("height", 256))
+        width = int(query.get("width", 256))
+        guidance_scale = float(query.get("guidance_scale", 6.3))
+        num_inference_steps = int(query.get("num_inference_steps", 10))
         negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
-        logger.debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
+        PAIA_LOGGER.debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
 
         if not prompt:
-            logger.error("No prompt provided")
+            PAIA_LOGGER.error("No prompt provided")
             yield {"error": "No prompt provided for image generation"}
             return
 
@@ -52,19 +50,20 @@ class TextToImageService(AIMicroService):
             result = self.imager(
                 prompt=prompt,
                 negative_prompt=negative_prompt,
-                num_inference_steps=10,
-                guidance_scale=6.0,
+                num_inference_steps=num_inference_steps,
+                guidance_scale=guidance_scale,
                 width=width,
-                height=height
+                height=height,
+
             )["images"][0]
 
             result.save(image_path)
             image_url = f"http://localhost:8080/ui/image/{safe_prompt}_{threading.current_thread().name}.png"
-            logger.info(f"Generated image: {image_url}")
+            PAIA_LOGGER.info(f"Generated image: {image_url}")
             yield {"result": image_url, "type": "image"}
 
         except Exception as e:
-            logger.error(f"Error in image generation: {str(e)}")
+            PAIA_LOGGER.error(f"Error in image generation: {str(e)}")
             yield {"error": f"Image generation failed: {str(e)}"}
 
-        logger.debug("End thread")
+        PAIA_LOGGER.debug("End thread")

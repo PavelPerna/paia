@@ -676,7 +676,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 def write_file(filepath, content):
     logger.info(f"Generating {filepath}")
-    with open(filepath, 'w') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def build_ui():

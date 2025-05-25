@@ -7086,3 +7086,47 @@ If this is a private repository, make sure to pass a token having permission to 
 2025-05-25 13:16:37,888 [MainThread] INFO: Port 8000 is available
 2025-05-25 13:16:37,891 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
 2025-05-25 13:16:37,903 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:18:33,859 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-19\test_build_ui_generation0\ui\index.html
+2025-05-25 13:18:34,030 [MainThread] INFO: Test message
+2025-05-25 13:19:46,629 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-20\test_build_ui_generation0\ui\index.html
+2025-05-25 13:19:46,775 [MainThread] INFO: Test message
+2025-05-25 13:21:26,220 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:21:28,916 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-21\test_build_ui_generation0\ui\index.html
+2025-05-25 13:21:29,063 [MainThread] INFO: Test message
+2025-05-25 13:23:16,196 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 13:23:19,344 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:23:19,345 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:23:20,927 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:23:20,928 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:23:21,110 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:23:21,111 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:23:21,138 [MainThread] INFO: Loading service: translate
+2025-05-25 13:23:21,139 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:23:21,143 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:23:21,143 [UI Server] INFO: Port 8080 is available
+2025-05-25 13:23:21,147 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:23:21,158 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 13:23:21,911 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:24:28,505 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-22\test_build_ui_generation0\ui\index.html
+2025-05-25 13:24:28,506 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-22\test_build_ui_generation0\ui\styles.css
+2025-05-25 13:24:28,507 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-22\test_build_ui_generation0\ui\api.js
+2025-05-25 13:24:28,507 [MainThread] INFO: Generating C:\Users\Pavel\AppData\Local\Temp\pytest-of-Pavel\pytest-22\test_build_ui_generation0\ui\script.js
+2025-05-25 13:24:28,537 [MainThread] INFO: Test message
+2025-05-25 13:24:33,278 [MainThread] INFO: Generating ui/index.html
+2025-05-25 13:24:33,283 [MainThread] INFO: Generating ui/styles.css
+2025-05-25 13:24:33,286 [MainThread] INFO: Generating ui/api.js
+2025-05-25 13:24:33,290 [MainThread] INFO: Generating ui/script.js
+2025-05-25 13:24:35,547 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 13:24:39,084 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:24:39,085 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:24:40,700 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:24:40,700 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:24:40,854 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:24:40,855 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:24:40,865 [MainThread] INFO: Loading service: translate
+2025-05-25 13:24:40,865 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:24:40,868 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:24:40,869 [UI Server] INFO: Port 8080 is available
+2025-05-25 13:24:40,872 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:24:40,883 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 13:25:17,380 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000

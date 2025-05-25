@@ -6,3 +6,6 @@ ui/image/*
 hug.key
 .pyc
 __pycache__
+__pycache__/*
+*/__pycache__
+*/__pycache__/*

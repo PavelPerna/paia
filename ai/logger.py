@@ -2,25 +2,33 @@
 import logging
 import logging.handlers
 import os
-from ai import PAIA_CONFIG, PAIASingleton
+import json
+from ai import PAIAConfig, PAIASingleton
 
 class PAIALogger(metaclass=PAIASingleton):
-    config = {"level": "DEBUG", "dir": ".", "file_name":"app.log"}
+    config = {"level": "INFO", "dir": ".", "file_name":"app.log"}
     def __init__(self):
         self.loggerLoaded = False
         self.logger = None
-        self.config = PAIA_CONFIG.get().get("logging")
-        self.config["logfile_path"] = os.path.join(self.config.get("dir"),self.config.get("file_name"))
+        self.config = PAIAConfig().getConfig().get("logging")
+        self.__populateFromConfig(self.config)
+        
+    def __populateFromConfig(self, config:json = False):
+        if not config:
+            config = self.config
+        self.logging_dir = config.get("dir",".")
+        self.logging_file = config.get("file_name","app.log")
+        self.logging_fullpath = os.path.join(self.logging_dir,self.logging_file)
+        self.level = getattr(logging, config.get("level", "INFO"), logging.INFO)
     
-    def loadLogger(self):
+    def __loadLogger(self):
         if not self.loggerLoaded:
-            logging_level = getattr(logging, self.config.get("level", "DEBUG"), logging.DEBUG)
-            logging_dir = self.config.get("dir", ".")
-            os.makedirs(logging_dir, exist_ok=True)
+            self.__populateFromConfig()
+            os.makedirs(self.logging_dir, exist_ok=True)
             self.logger = logging.getLogger('AIMicroService')
-            self.logger.setLevel(logging_level)
-            if not self.logger.handlers:
-                handler = logging.handlers.RotatingFileHandler(self.config["logfile_path"], maxBytes=5*1024*1024, backupCount=3)
+            self.logger.setLevel(self.level)
+            if not self.loggerLoaded:
+                handler = logging.handlers.RotatingFileHandler(self.logging_fullpath, maxBytes=5*1024*1024, backupCount=3)
                 handler.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s] %(levelname)s: %(message)s'))
                 self.logger.addHandler(handler)
                 console = logging.StreamHandler()
@@ -28,7 +36,21 @@ class PAIALogger(metaclass=PAIASingleton):
                 self.logger.addHandler(console)
             self.loggerLoaded = True
         return self.logger
-    def get(self):
-        return self.loadLogger()
+    
+    def update(self,config:json):
+        if not self.config == config:
+            self.config = config
+            self.loggerLoaded = False
+        return self.__loadLogger()
 
-PAIA_LOGGER = PAIALogger().get()
+    def getLogger(self):
+        return self.__loadLogger()
+
+    def info(self, val):
+        return self.__loadLogger().info(val)
+
+    def error(self, val):
+        return self.__loadLogger().error(val)
+
+    def debug(self, val):
+        return self.__loadLogger().debug(val)

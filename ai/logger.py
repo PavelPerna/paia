@@ -4,7 +4,7 @@ import logging.handlers
 import os
 from ai import PAIA_CONFIG, PAIASingleton
 
-class PAIALogger(PAIASingleton):
+class PAIALogger(metaclass=PAIASingleton):
     config = {"level": "DEBUG", "dir": ".", "file_name":"app.log"}
     def __init__(self):
         self.loggerLoaded = False

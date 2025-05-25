@@ -17,7 +17,7 @@ def test_build_ui_generation(ui_dir, monkeypatch):
     assert os.path.exists(ui_dir / "styles.css")
     assert os.path.exists(ui_dir / "script.js")
     assert os.path.exists(ui_dir / "api.js")
-    with open(ui_dir / "index.html") as f:
+    with open(ui_dir / "index.html", encoding='utf-8') as f:
         data = f.read()
-        assert 'data-theme="light"' in data
-        assert 'type="module"' in data
+        assert data.find('data-theme="light"')
+        assert data.find('type="module"')

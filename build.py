@@ -1,15 +1,18 @@
 # build_ui.py
 import os
 import json
-from ai import PAIA_LOGGER,PAIA_CONFIG
-# Initialize logger with config from PAIAConfig
+from ai import PAIA_CONFIG, PAIA_LOGGER
+
+# Initialize logger and config via global singletons
+logger = PAIA_LOGGER
+config = PAIA_CONFIG.get()
 UI_DIR = PAIA_CONFIG.ui_dir
 
 os.makedirs(UI_DIR, exist_ok=True)
 os.makedirs(os.path.join(UI_DIR, "image"), exist_ok=True)
 
 INDEX_HTML = """<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +21,10 @@ INDEX_HTML = """<!DOCTYPE html>
 </head>
 <body>
     <div class="container">
-        <h1>PAIA AI Microservice</h1>
+        <div class="header">
+            <h1>PAIA AI Microservice</h1>
+            <button id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+        </div>
         <div id="history" class="history"></div>
         <div class="input-section">
             <select id="service-select">
@@ -28,46 +34,105 @@ INDEX_HTML = """<!DOCTYPE html>
             <div class="query-container">
                 <input type="text" id="query-input" placeholder="Enter your query">
                 <input type="file" id="file-upload" accept=".txt" title="Upload a text file">
-                <button id="mic-btn" title="Record voice input">Voice</button>
+                <button id="mic-btn" title="Record voice input">🎤</button>
             </div>
             <button id="submit-btn">Submit</button>
         </div>
     </div>
-    <script src="api.js" type="module"></script>
-    <script src="script.js" type="module"></script>
+    <script type="module" src="api.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
 """
 
-STYLES_CSS = """body {
+STYLES_CSS = """:root {
+    --background-color: #f4f4f4;
+    --container-bg: white;
+    --text-color: #333;
+    --border-color: #ccc;
+    --request-bg: #e6f3ff;
+    --response-bg: #e6ffe6;
+    --error-bg: #ffe6e6;
+    --button-bg: #007bff;
+    --button-hover-bg: #0056b3;
+    --play-btn-bg: #28a745;
+    --play-btn-hover-bg: #218838;
+    --mic-btn-bg: #007bff;
+    --mic-btn-hover-bg: #0056b3;
+    --mic-btn-recording-bg: #dc3545;
+    --mic-btn-recording-hover-bg: #c82333;
+}
+
+[data-theme="dark"] {
+    --background-color: #1a1a1a;
+    --container-bg: #2c2c2c;
+    --text-color: #e0e0e0;
+    --border-color: #555;
+    --request-bg: #2a3f5f;
+    --response-bg: #2f5f2a;
+    --error-bg: #5f2a2a;
+    --button-bg: #1e90ff;
+    --button-hover-bg: #1c86ee;
+    --play-btn-bg: #2ecc71;
+    --play-btn-hover-bg: #27ae60;
+    --mic-btn-bg: #1e90ff;
+    --mic-btn-hover-bg: #1c86ee;
+    --mic-btn-recording-bg: #ff5555;
+    --mic-btn-recording-hover-bg: #ff3333;
+}
+
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: ${config.ui.theme === 'dark' ? '#333' : '#f4f4f4'};
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
-    background: white;
+    background: var(--container-bg);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#theme-toggle {
+    padding: 8px 12px;
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#theme-toggle:hover {
+    background-color: var(--button-hover-bg);
+}
+
 h1 {
     text-align: center;
-    color: #333;
+    color: var(--text-color);
+    margin: 0;
 }
 
 .history {
     min-height: 200px;
     max-height: 300px;
     overflow-y: auto;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     padding: 10px;
     margin-bottom: 20px;
-    background-color: #fafafa;
+    background-color: var(--container-bg);
 }
 
 .history-entry {
@@ -80,15 +145,15 @@ h1 {
 }
 
 .history-entry.request {
-    background-color: #e6f3ff;
+    background-color: var(--request-bg);
 }
 
 .history-entry.response {
-    background-color: #e6ffe6;
+    background-color: var(--response-bg);
 }
 
 .history-entry.error {
-    background-color: #ffe6e6;
+    background-color: var(--error-bg);
 }
 
 .history-entry img {
@@ -100,7 +165,7 @@ h1 {
 
 .history-entry .play-btn {
     padding: 5px 10px;
-    background-color: #28a745;
+    background-color: var(--play-btn-bg);
     color: white;
     border: none;
     border-radius: 4px;
@@ -108,7 +173,7 @@ h1 {
 }
 
 .history-entry .play-btn:hover {
-    background-color: #218838;
+    background-color: var(--play-btn-hover-bg);
 }
 
 .input-section {
@@ -129,13 +194,24 @@ h1 {
 .dynamic-selectors textarea {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+}
+
+.dynamic-selectors select:focus,
+.dynamic-selectors input[type="text"]:focus,
+.dynamic-selectors input[type="range"]:focus,
+.dynamic-selectors textarea:focus {
+    outline: none;
+    border-color: var(--button-bg);
 }
 
 .dynamic-selectors label {
     font-size: 14px;
     margin-right: 5px;
+    color: var(--text-color);
 }
 
 .slider-container {
@@ -148,13 +224,21 @@ h1 {
     font-size: 14px;
     width: 60px;
     text-align: right;
+    color: var(--text-color);
 }
 
 #service-select {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+}
+
+#service-select:focus {
+    outline: none;
+    border-color: var(--button-bg);
 }
 
 .query-container {
@@ -167,8 +251,15 @@ h1 {
     flex: 1;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+}
+
+#query-input:focus {
+    outline: none;
+    border-color: var(--button-bg);
 }
 
 #file-upload {
@@ -177,7 +268,7 @@ h1 {
 
 #mic-btn {
     padding: 10px;
-    background-color: #007bff;
+    background-color: var(--mic-btn-bg);
     color: white;
     border: none;
     border-radius: 4px;
@@ -185,20 +276,20 @@ h1 {
 }
 
 #mic-btn.recording {
-    background-color: #dc3545;
+    background-color: var(--mic-btn-recording-bg);
 }
 
 #mic-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--mic-btn-hover-bg);
 }
 
 #mic-btn.recording:hover {
-    background-color: #c82333;
+    background-color: var(--mic-btn-recording-hover-bg);
 }
 
 #submit-btn {
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: var(--button-bg);
     color: white;
     border: none;
     border-radius: 4px;
@@ -206,7 +297,7 @@ h1 {
 }
 
 #submit-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--button-hover-bg);
 }
 """
 
@@ -278,10 +369,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const micBtn = document.getElementById('mic-btn');
     const submitBtn = document.getElementById('submit-btn');
     const historyDiv = document.getElementById('history');
+    const themeToggle = document.getElementById('theme-toggle');
     let config = {};
     let serverUrl = 'http://localhost:8000';
     let recognition = null;
     let isRecording = false;
+
+    // Theme Toggle Handler
+    const setTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', theme);
+    };
+
+    // Load saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    });
 
     // Initialize Speech Recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -299,14 +408,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         recognition.onend = () => {
             isRecording = false;
             micBtn.classList.remove('recording');
-            micBtn.textContent = 'Voice';
+            micBtn.textContent = '🎤';
         };
         recognition.onerror = (event) => {
             console.error(`Speech recognition error: ${event.error}`);
             addToHistory(`Error: Speech recognition failed - ${event.error}`, 'error');
             isRecording = false;
             micBtn.classList.remove('recording');
-            micBtn.textContent = 'Voice';
+            micBtn.textContent = '🎤';
         };
     } else {
         micBtn.disabled = true;
@@ -342,7 +451,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             recognition.start();
             isRecording = true;
             micBtn.classList.add('recording');
-            micBtn.textContent = 'Stop';
+            micBtn.textContent = '⏹';
         }
     });
 
@@ -540,7 +649,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         textSpan.textContent = `Response: ${text}`;
         const playBtn = document.createElement('button');
         playBtn.className = 'play-btn';
-        playBtn.textContent = 'Play';
+        playBtn.textContent = '▶';
         playBtn.title = 'Play response';
         playBtn.addEventListener('click', () => {
             const utterance = new SpeechSynthesisUtterance(text);
@@ -566,7 +675,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 """
 
 def write_file(filepath, content):
-    PAIA_LOGGER.info(f"Generating {filepath}")
+    logger.info(f"Generating {filepath}")
     with open(filepath, 'w') as f:
         f.write(content)
 

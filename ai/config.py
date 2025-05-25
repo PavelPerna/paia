@@ -13,7 +13,7 @@ DEFAULT_CONFIG = {
     }
 }
 
-class PAIAConfig(PAIASingleton):
+class PAIAConfig(metaclass=PAIASingleton):
     config = {}
     host = "localhost"
     port = 8000

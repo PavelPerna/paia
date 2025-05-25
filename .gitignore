@@ -5,3 +5,4 @@ linenv/*
 ui/image/*
 hug.key
 .pyc
+__pycache__

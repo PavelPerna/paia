@@ -6977,3 +6977,112 @@ If this is a private repository, make sure to pass a token having permission to 
 2025-05-25 13:07:13,209 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/api.js
 2025-05-25 13:07:13,210 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/script.js
 2025-05-25 13:07:13,243 [MainThread] INFO: Test message
+2025-05-25 13:09:07,538 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-129/test_build_ui_generation0/ui/index.html
+2025-05-25 13:09:07,539 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-129/test_build_ui_generation0/ui/styles.css
+2025-05-25 13:09:07,540 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-129/test_build_ui_generation0/ui/api.js
+2025-05-25 13:09:07,541 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-129/test_build_ui_generation0/ui/script.js
+2025-05-25 13:09:07,570 [MainThread] INFO: Test message
+2025-05-25 13:09:16,999 [MainThread] INFO: Generating ui/index.html
+2025-05-25 13:09:17,002 [MainThread] INFO: Generating ui/styles.css
+2025-05-25 13:09:17,006 [MainThread] INFO: Generating ui/api.js
+2025-05-25 13:09:17,010 [MainThread] INFO: Generating ui/script.js
+2025-05-25 13:09:21,173 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:09:21,174 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:09:25,461 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:09:25,462 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:09:27,315 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:09:27,316 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:09:27,489 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:09:27,490 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:09:27,505 [MainThread] ERROR: Error loading translate: 'PAIALogger' object has no attribute 'get'
+2025-05-25 13:09:27,508 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:09:27,511 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:10:58,888 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:10:58,889 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:11:02,105 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:11:02,106 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:11:03,539 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:11:03,540 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:11:03,700 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:11:03,701 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:11:03,709 [MainThread] ERROR: Error loading translate: 'PAIALogger' object has no attribute 'get'
+2025-05-25 13:11:03,713 [MainThread] INFO: Port 8000 is in use
+2025-05-25 13:11:31,058 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:11:34,265 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:11:34,266 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:11:36,345 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:11:36,346 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:11:37,334 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:11:37,335 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:11:37,452 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:11:37,453 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:11:37,463 [MainThread] ERROR: Error loading translate: 'PAIALogger' object has no attribute 'get'
+2025-05-25 13:11:37,466 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:11:37,469 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:12:20,770 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:12:20,771 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:12:24,698 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:12:26,634 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:12:26,635 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:12:28,798 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:12:28,798 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:12:29,801 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:12:29,802 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:12:29,923 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:12:29,924 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:12:29,960 [MainThread] INFO: Loading service: translate
+2025-05-25 13:12:29,961 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:12:29,964 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:12:29,967 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:13:27,495 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:13:30,487 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:13:30,488 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:13:33,489 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:13:33,489 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:13:34,870 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:13:34,871 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:13:35,024 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:13:35,025 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:13:35,035 [MainThread] INFO: Loading service: translate
+2025-05-25 13:13:35,036 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:13:35,039 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:13:35,042 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:14:45,988 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:14:45,988 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:14:54,039 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:14:54,040 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:14:55,658 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:14:55,659 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:14:56,449 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:14:56,449 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:14:56,453 [MainThread] INFO: Loading service: translate
+2025-05-25 13:14:56,454 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:16:04,488 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:16:06,959 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 13:16:06,960 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 13:16:09,946 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:16:09,947 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:16:11,337 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:16:11,338 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:16:11,489 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:16:11,490 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:16:11,500 [MainThread] INFO: Loading service: translate
+2025-05-25 13:16:11,501 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:16:11,504 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:16:11,505 [UI Server] INFO: Port 8080 is available
+2025-05-25 13:16:11,507 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 13:16:11,519 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 13:16:33,118 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 13:16:34,772 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 13:16:36,795 [MainThread] INFO: Loading service: text-generator
+2025-05-25 13:16:36,796 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 13:16:37,769 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 13:16:37,769 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 13:16:37,873 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 13:16:37,874 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 13:16:37,884 [MainThread] INFO: Loading service: translate
+2025-05-25 13:16:37,885 [MainThread] INFO: Loaded service: translate
+2025-05-25 13:16:37,888 [UI Server] INFO: Port 8080 is available
+2025-05-25 13:16:37,888 [MainThread] INFO: Port 8000 is available
+2025-05-25 13:16:37,891 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 13:16:37,903 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000

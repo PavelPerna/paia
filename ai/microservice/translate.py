@@ -4,7 +4,7 @@ from transformers import pipeline
 from ai.logger import PAIALogger
 import threading
 
-logger = PAIALogger().get()
+logger = PAIALogger().getLogger()
 
 class TranslateService(AIMicroService):
     def __init__(self):

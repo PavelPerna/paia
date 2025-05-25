@@ -6,7 +6,7 @@ from .singleton import PAIASingleton
 class PAIAConfig(metaclass=PAIASingleton):
     DEFAULT_CONFIG =  {
     "server": {"host": "localhost", "port": 8000},
-    "ui": {"directory": "ui","host":"localhost","port":8080,"autostart":False},
+    "ui": {"directory": "ui","host":"localhost","port":8080,"autostart":True},
     "logging": {"level": "DEBUG", "dir": ".", "file_name":"app.log"},
     "services": {
         "translate": {"enabled": True, "streamable": False, "parameters": []},
@@ -21,7 +21,7 @@ class PAIAConfig(metaclass=PAIASingleton):
     logging_level = "DEBUG"
     logging_dir = "."
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(base_dir,"config.json")
+    config_file = os.path.join(base_dir,"..","config.json")
     
 
     def __init__(self, config_file: str = None):

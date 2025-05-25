@@ -202,7 +202,7 @@ class PAIAApplication:
         )
 
     def run(self):
-        if PAIAConfig().config["ui"]["autostart"]:
+        if PAIAConfig().getConfig().get("ui",{}).get("autostart",True):
             ui_server_thread = threading.Thread(target=self.ui_server,daemon=True,name="UI Server")
             ui_server_thread.start()
         service_server_thread = threading.Thread(target=self.service_server(),daemon=True,name="Service Server")

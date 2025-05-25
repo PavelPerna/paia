@@ -6917,3 +6917,63 @@ If this is a private repository, make sure to pass a token having permission to 
 2025-05-25 03:46:57,350 [Thread-7 (process_request_thread)] DEBUG: GET request: /services
 2025-05-25 03:46:57,351 [Thread-7 (process_request_thread)] INFO: Returning services: ['text-generator', 'text-to-image', 'text-to-speech', 'translate']
 2025-05-25 03:46:57,352 [Thread-7 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-25 12:47:56,565 [MainThread] INFO: Loading service: sentiment-analyzer
+2025-05-25 12:47:56,566 [MainThread] INFO: Loaded service: sentiment-analyzer
+2025-05-25 12:48:01,583 [MainThread] INFO: Loading service: text-generator
+2025-05-25 12:48:01,583 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 12:48:03,361 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 12:48:03,362 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 12:48:03,556 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 12:48:03,557 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 12:48:03,580 [MainThread] ERROR: Error loading translate: 'PAIALogger' object has no attribute 'get'
+2025-05-25 12:48:03,582 [MainThread] INFO: Port 8000 is available
+2025-05-25 12:48:03,585 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 12:48:04,665 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 12:48:08,219 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-116/test_build_ui_generation0/ui/index.html
+2025-05-25 12:48:08,220 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-116/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:48:08,221 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-116/test_build_ui_generation0/ui/api.js
+2025-05-25 12:48:08,222 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-116/test_build_ui_generation0/ui/script.js
+2025-05-25 12:48:08,328 [MainThread] INFO: Test message
+2025-05-25 12:49:22,110 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-117/test_build_ui_generation0/ui/index.html
+2025-05-25 12:49:22,111 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-117/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:49:22,112 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-117/test_build_ui_generation0/ui/api.js
+2025-05-25 12:49:22,113 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-117/test_build_ui_generation0/ui/script.js
+2025-05-25 12:49:22,231 [MainThread] INFO: Test message
+2025-05-25 12:49:57,610 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-118/test_build_ui_generation0/ui/index.html
+2025-05-25 12:49:57,611 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-118/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:49:57,612 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-118/test_build_ui_generation0/ui/api.js
+2025-05-25 12:49:57,613 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-118/test_build_ui_generation0/ui/script.js
+2025-05-25 12:49:57,712 [MainThread] INFO: Test message
+2025-05-25 12:50:42,284 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-119/test_build_ui_generation0/ui/index.html
+2025-05-25 12:50:42,285 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-119/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:50:42,286 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-119/test_build_ui_generation0/ui/api.js
+2025-05-25 12:50:42,286 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-119/test_build_ui_generation0/ui/script.js
+2025-05-25 12:50:42,371 [MainThread] INFO: Test message
+2025-05-25 12:51:35,131 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-120/test_build_ui_generation0/ui/index.html
+2025-05-25 12:51:35,132 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-120/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:51:35,132 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-120/test_build_ui_generation0/ui/api.js
+2025-05-25 12:51:35,133 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-120/test_build_ui_generation0/ui/script.js
+2025-05-25 12:51:35,229 [MainThread] INFO: Test message
+2025-05-25 12:53:17,749 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-121/test_build_ui_generation0/ui/index.html
+2025-05-25 12:53:17,749 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-121/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:53:17,750 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-121/test_build_ui_generation0/ui/api.js
+2025-05-25 12:53:17,751 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-121/test_build_ui_generation0/ui/script.js
+2025-05-25 12:53:56,971 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-122/test_build_ui_generation0/ui/index.html
+2025-05-25 12:53:56,971 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-122/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:53:56,972 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-122/test_build_ui_generation0/ui/api.js
+2025-05-25 12:53:56,973 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-122/test_build_ui_generation0/ui/script.js
+2025-05-25 12:53:57,083 [MainThread] INFO: Test message
+2025-05-25 12:55:08,972 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-123/test_build_ui_generation0/ui/index.html
+2025-05-25 12:55:08,973 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-123/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:55:08,975 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-123/test_build_ui_generation0/ui/api.js
+2025-05-25 12:55:08,976 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-123/test_build_ui_generation0/ui/script.js
+2025-05-25 12:55:09,078 [MainThread] INFO: Test message
+2025-05-25 12:57:01,242 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-124/test_build_ui_generation0/ui/index.html
+2025-05-25 12:57:01,243 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-124/test_build_ui_generation0/ui/styles.css
+2025-05-25 12:57:01,244 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-124/test_build_ui_generation0/ui/api.js
+2025-05-25 12:57:01,245 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-124/test_build_ui_generation0/ui/script.js
+2025-05-25 13:07:13,207 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/index.html
+2025-05-25 13:07:13,208 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/styles.css
+2025-05-25 13:07:13,209 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/api.js
+2025-05-25 13:07:13,210 [MainThread] INFO: Generating /tmp/pytest-of-root/pytest-128/test_build_ui_generation0/ui/script.js
+2025-05-25 13:07:13,243 [MainThread] INFO: Test message

@@ -1,7 +1,7 @@
 # ai/microservice/text_generator.py
 from .base_service import AIMicroService
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from ai import PAIA_CONFIG, PAIA_LOGGER
+from ai import PAIAConfig, PAIALogger
 import torch
 import time
 
@@ -21,10 +21,10 @@ class TextGenerationService(AIMicroService):
             )
 
             self.tokenizer.pad_token = self.tokenizer.eos_token
-            PAIA_LOGGER.info("TextGenerationService initialized")
+            PAIALogger().info("TextGenerationService initialized")
             self.modelLoaded = True
         except Exception as e:
-            PAIA_LOGGER.error(f"Failed to load model {model_id}: {str(e)}")
+            PAIALogger().error(f"Failed to load model {model_id}: {str(e)}")
             raise
 
     def process(self, query):
@@ -35,16 +35,16 @@ class TextGenerationService(AIMicroService):
         prefix = query.get("prefix", "")
         context = query.get("context", "")
         max_length = int(query.get("max_length", 50))
-        PAIA_LOGGER.debug(f"Processing query: prompt='{prompt}', prefix='{prefix}', context='{context}', max_length={max_length}")
+        PAIALogger().debug(f"Processing query: prompt='{prompt}', prefix='{prefix}', context='{context}', max_length={max_length}")
 
         if not prompt:
-            PAIA_LOGGER.error("No prompt provided")
+            PAIALogger().error("No prompt provided")
             yield {"error": "No prompt provided for text generation"}
             return
 
         try:
             full_prompt = f"{prefix} {prompt}".strip()
-            PAIA_LOGGER.debug(f"Full prompt: {full_prompt}")
+            PAIALogger().debug(f"Full prompt: {full_prompt}")
             input_ids = self.tokenizer.encode(full_prompt, return_tensors="pt").to("cuda")
             attention_mask = torch.ones(input_ids.shape, dtype=torch.long).to("cuda")
 
@@ -59,16 +59,16 @@ class TextGenerationService(AIMicroService):
                     attention_mask = torch.cat((attention_mask, torch.ones((1, 1), dtype=torch.long).to("cuda")), dim=1)
                     
                     generated_text = self.tokenizer.decode(generated_ids[0], skip_special_tokens=True)
-                    PAIA_LOGGER.debug(f"Generated text: {generated_text}")
+                    PAIALogger().debug(f"Generated text: {generated_text}")
                     yield {"result": generated_text}
                     time.sleep(0.2)
 
                     if next_token_id.item() == self.tokenizer.eos_token_id:
-                        PAIA_LOGGER.info("EOS token reached")
+                        PAIALogger().info("EOS token reached")
                         break
         
         except Exception as e:
-            PAIA_LOGGER.error(f"Error in text generation: {str(e)}")
+            PAIALogger().error(f"Error in text generation: {str(e)}")
             yield {"error": f"Text generation failed: {str(e)}"}
 
-        PAIA_LOGGER.debug("End thread")
+        PAIALogger().debug("End thread")

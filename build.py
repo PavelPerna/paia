@@ -1,12 +1,12 @@
 # build_ui.py
 import os
 import json
-from ai import PAIA_CONFIG, PAIA_LOGGER
+from ai import PAIAConfig,PAIALogger
 
 # Initialize logger and config via global singletons
-logger = PAIA_LOGGER
-config = PAIA_CONFIG.get()
-UI_DIR = PAIA_CONFIG.ui_dir
+logger = PAIALogger().getLogger()
+config = PAIAConfig().getConfig()
+UI_DIR = PAIAConfig().ui_dir
 
 os.makedirs(UI_DIR, exist_ok=True)
 os.makedirs(os.path.join(UI_DIR, "image"), exist_ok=True)

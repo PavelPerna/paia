@@ -13,14 +13,14 @@ class TextToImageService(AIMicroService):
     def loadModel(self):
         try:
             model_id = "stablediffusionapi/uber-realistic-porn-merge"
-            PAIA_LOGGER.info(f"Loading model : {model_id}")
+            PAIALogger().info(f"Loading model : {model_id}")
             self.model = AutoModel.from_pretrained(model_id).to("cuda")
             self.tokenizer = AutoTokenizer.from_pretrained(model_id)
             self.imager = pipeline(model=self.model,torch_dtype=torch.float16,trust_remote_code=True,tokenizer=self.tokenizer)
-            PAIA_LOGGER.info(f"TextToImageService initialized with { self.model}")
+            PAIALogger().info(f"TextToImageService initialized with { self.model}")
             self.modelLoaded = True
         except Exception as e:
-            PAIA_LOGGER.error(f"Failed to load model: {str(e)}")
+            PAIALogger().error(f"Failed to load model: {str(e)}")
             raise
 
     def process(self, query):
@@ -33,10 +33,10 @@ class TextToImageService(AIMicroService):
         guidance_scale = float(query.get("guidance_scale", 6.3))
         num_inference_steps = int(query.get("num_inference_steps", 10))
         negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
-        PAIA_LOGGER.debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
+        PAIALogger().debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
 
         if not prompt:
-            PAIA_LOGGER.error("No prompt provided")
+            PAIALogger().error("No prompt provided")
             yield {"error": "No prompt provided for image generation"}
             return
 
@@ -59,11 +59,11 @@ class TextToImageService(AIMicroService):
 
             result.save(image_path)
             image_url = f"http://localhost:8080/ui/image/{safe_prompt}_{threading.current_thread().name}.png"
-            PAIA_LOGGER.info(f"Generated image: {image_url}")
+            PAIALogger().info(f"Generated image: {image_url}")
             yield {"result": image_url, "type": "image"}
 
         except Exception as e:
-            PAIA_LOGGER.error(f"Error in image generation: {str(e)}")
+            PAIALogger().error(f"Error in image generation: {str(e)}")
             yield {"error": f"Image generation failed: {str(e)}"}
 
-        PAIA_LOGGER.debug("End thread")
+        PAIALogger().debug("End thread")

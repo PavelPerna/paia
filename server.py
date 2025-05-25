@@ -9,7 +9,7 @@ import http.client
 import argparse
 import asyncio
 
-from ai import PAIA_LOGGER,PAIA_CONFIG
+from ai import PAIAConfig,PAIALogger
 from ai.microservice import get_service
 from ai.microservice.base_service import PAIA_SERVICE_REGISTRY
 
@@ -18,29 +18,29 @@ class PAIAServer(socketserver.ThreadingTCPServer):
 
 class PAIAUIHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, directory=PAIA_CONFIG.ui_dir)
+        super().__init__(*args, **kwargs, directory=PAIAConfig().ui_dir)
 
 
 class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        PAIA_LOGGER.debug(f"GET request: {self.path}")
+        PAIALogger().debug(f"GET request: {self.path}")
         if self.path == "/services":
             services = list(PAIA_SERVICE_REGISTRY.keys())
             if not services:
-                PAIA_LOGGER.error("No services in PAIA_SERVICE_REGISTRY")
+                PAIALogger().error("No services in PAIA_SERVICE_REGISTRY")
                 self.__send_error(500, "No services available")
                 return
-            PAIA_LOGGER.info(f"Returning services: {services}")
+            PAIALogger().info(f"Returning services: {services}")
             self.__send_response(200, {"services": services})
         elif self.path == "/config":
             try:
-                PAIA_LOGGER.info("Returning config")
-                self.__send_response(200, PAIA_CONFIG.get())
+                PAIALogger().info("Returning config")
+                self.__send_response(200, PAIAConfig().get())
             except:
-                PAIA_LOGGER.error(f"Permission denied for config file : {PAIA_CONFIG.config_path}")
+                PAIALogger().error(f"Permission denied for config file : {PAIAConfig().config_path}")
                 self.__send_error(500, "Permission denied for config file")
         else:
-            PAIA_LOGGER.warning(f"Unknown path: {self.path}")
+            PAIALogger().warning(f"Unknown path: {self.path}")
             self.__send_error(404, "Not found")
 
     def do_POST(self):
@@ -48,29 +48,29 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length).decode('utf-8')
             request_data = json.loads(post_data)
-            PAIA_LOGGER.debug(f"Received POST: {request_data}")
+            PAIALogger().debug(f"Received POST: {request_data}")
 
             service_name = request_data.get("service")
             query = request_data.get("query", {})
             stream = request_data.get("stream", False)
 
             if not service_name:
-                PAIA_LOGGER.error("Missing service name")
+                PAIALogger().error("Missing service name")
                 self.__send_error(400, "Service name is required")
                 return
 
-            if not PAIA_CONFIG.get().get("services", {}).get(service_name, {}).get("enabled", True):
-                PAIA_LOGGER.warning(f"Service disabled: {service_name}")
+            if not PAIAConfig().get().get("services", {}).get(service_name, {}).get("enabled", True):
+                PAIALogger().warning(f"Service disabled: {service_name}")
                 self.__send_error(403, f"Service '{service_name}' is disabled")
                 return
 
             service = get_service(service_name)
             if not service:
-                PAIA_LOGGER.error(f"Service not found: {service_name}")
+                PAIALogger().error(f"Service not found: {service_name}")
                 self.__send_error(404, f"Service '{service_name}' not found")
                 return
 
-            PAIA_LOGGER.info(f"Processing {service_name}, stream={stream}")
+            PAIALogger().info(f"Processing {service_name}, stream={stream}")
             if stream:
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream")
@@ -82,29 +82,29 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
                 try:
                     for result in service.process(query):
                         event_data = json.dumps(result)
-                        PAIA_LOGGER.debug(f"Sending SSE event: {event_data}")
+                        PAIALogger().debug(f"Sending SSE event: {event_data}")
                         self.wfile.write(f"data: {event_data}\n\n".encode('utf-8'))
                         self.wfile.flush()
                 except Exception as e:
                     event_data = json.dumps({"error": f"Streaming error: {str(e)}"})
-                    PAIA_LOGGER.error(f"Streaming error: {event_data}")
+                    PAIALogger().error(f"Streaming error: {event_data}")
                     self.wfile.write(f"data: {event_data}\n\n".encode('utf-8'))
                     self.wfile.flush()
             else:
-                PAIA_LOGGER.info(f"Non-streaming for: {service_name}")
+                PAIALogger().info(f"Non-streaming for: {service_name}")
                 for result in service.process(query):
                     self.__send_response(200, result)
                     break
 
         except json.JSONDecodeError:
-            PAIA_LOGGER.error("Invalid JSON payload")
+            PAIALogger().error("Invalid JSON payload")
             self.__send_error(400, "Invalid JSON payload")
         except Exception as e:
-            PAIA_LOGGER.error(f"Server error: {str(e)}")
+            PAIALogger().error(f"Server error: {str(e)}")
             self.__send_error(500, f"Server error: {str(e)}")
 
     def do_OPTIONS(self):
-        PAIA_LOGGER.debug("OPTIONS request")
+        PAIALogger().debug("OPTIONS request")
         self.send_response(200)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -117,7 +117,7 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(json.dumps(data).encode('utf-8'))
-        PAIA_LOGGER.debug(f"Sent response: status={status}, data={data}")
+        PAIALogger().debug(f"Sent response: status={status}, data={data}")
 
     def __send_error(self, status, message):
         self.send_response(status)
@@ -125,7 +125,7 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(json.dumps({"error": message}).encode('utf-8'))
-        PAIA_LOGGER.error(f"Sent error: status={status}, message={message}")
+        PAIALogger().error(f"Sent error: status={status}, message={message}")
 
 
 class PAIAApplication:
@@ -142,10 +142,10 @@ class PAIAApplication:
             conn = http.client.HTTPConnection(host, port, timeout=1)
             conn.request("HEAD", "/")
             conn.close()
-            PAIA_LOGGER.info(f"Port {port} is in use")
+            PAIALogger().info(f"Port {port} is in use")
             return True
         except (http.client.HTTPException, ConnectionRefusedError, socket.timeout):
-            PAIA_LOGGER.info(f"Port {port} is available")
+            PAIALogger().info(f"Port {port} is available")
             return False
 
     def run_server(self, host :str = "localhost", port :int = 8000, server : type = http.server.ThreadingHTTPServer, handler: type = http.server.BaseHTTPRequestHandler, description : str = "Default server" ):
@@ -155,10 +155,10 @@ class PAIAApplication:
         # Start 
         with server((host, port), handler) as srv:
             try:
-                PAIA_LOGGER.info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] running at http://{host}:{port}")
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] running at http://{host}:{port}")
                 srv.serve_forever()
             except KeyboardInterrupt:
-                PAIA_LOGGER.info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] shutting down at http://{host}:{port}")
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] shutting down at http://{host}:{port}")
                 srv.server_close()
 
     def retry(self, what: callable , retry_count : int = 3, retry_wait : int = 1):
@@ -173,8 +173,8 @@ class PAIAApplication:
                 i = retry_count             
                 break
             except Exception as e:
-                PAIA_LOGGER.info(f"Operation {str(what)} failed with {str(e)}")
-                PAIA_LOGGER.info(f"Retry({i}/{retry_count}) - waiting {retry_wait} seconds")
+                PAIALogger().info(f"Operation {str(what)} failed with {str(e)}")
+                PAIALogger().info(f"Retry({i}/{retry_count}) - waiting {retry_wait} seconds")
                 time.sleep(retry_wait)
             i = i + 1
 
@@ -182,8 +182,8 @@ class PAIAApplication:
     def ui_server(self):  
         self.retry(
             what = self.run_server(
-                host=PAIA_CONFIG.ui_host,
-                port=PAIA_CONFIG.ui_port,
+                host=PAIAConfig().ui_host,
+                port=PAIAConfig().ui_port,
                 server=PAIAServer,
                 handler=PAIAUIHandler,
                 description="UI Server"
@@ -193,8 +193,8 @@ class PAIAApplication:
     def service_server(self):
         self.retry(
             what = self.run_server(
-                host=PAIA_CONFIG.host,
-                port=PAIA_CONFIG.port,
+                host=PAIAConfig().host,
+                port=PAIAConfig().port,
                 server=PAIAServer,
                 handler=PAIAServiceHandler,
                 description="Main Server"
@@ -202,7 +202,7 @@ class PAIAApplication:
         )
 
     def run(self):
-        if PAIA_CONFIG.config["ui"]["autostart"]:
+        if PAIAConfig().config["ui"]["autostart"]:
             ui_server_thread = threading.Thread(target=self.ui_server,daemon=True,name="UI Server")
             ui_server_thread.start()
         service_server_thread = threading.Thread(target=self.service_server(),daemon=True,name="Service Server")

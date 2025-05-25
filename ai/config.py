@@ -1,71 +1,74 @@
-# ai/PAIA_CONFIG.py
+# ai/PAIAConfig().py
 import os
 import json
 from .singleton import PAIASingleton
 
-DEFAULT_CONFIG = {
+class PAIAConfig(metaclass=PAIASingleton):
+    DEFAULT_CONFIG =  {
     "server": {"host": "localhost", "port": 8000},
     "ui": {"directory": "ui","host":"localhost","port":8080,"autostart":False},
     "logging": {"level": "DEBUG", "dir": ".", "file_name":"app.log"},
     "services": {
         "translate": {"enabled": True, "streamable": False, "parameters": []},
         "text-generator": {"enabled": True, "streamable": False, "parameters": []}
+        },
+    "is_default": True
     }
-}
-
-class PAIAConfig(metaclass=PAIASingleton):
-    config = {}
+    config = DEFAULT_CONFIG
     host = "localhost"
     port = 8000
     ui_dir = "ui"
     logging_level = "DEBUG"
     logging_dir = "."
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.join(base_dir, "..", "config.json")
-
-    def __init__(self):
-        self.configLoaded = False
-        self.config = self.loadConfig()
-
-    def default(self):
-        return DEFAULT_CONFIG
+    config_file = os.path.join(base_dir,"config.json")
     
-    def get(self):
+
+    def __init__(self, config_file: str = None):
+        self.configLoaded = False
+        self.config = self.__loadConfig(config_file)
+       
+    def getDefault(self):
+        return self.DEFAULT_CONFIG
+    
+    def getConfig(self):
+        self.__loadConfig()
         return self.config
 
-    def loadConfig(self):          
+    def update(self, config_file: str = None):
+        return self.__loadConfig(config_file)
+
+    def __loadConfig(self, config_file: str = None):   
+        if config_file and not self.config_file == config_file:
+            self.config_file = config_file
+            self.configLoaded = False
+            
         if self.configLoaded:
             return self.config
         
         res = False
         try:
-            print(f"Attempting to load config from: {self.config_path}")
-            if not os.path.exists(self.config_path):
-                print(f"Config file does not exist at: {self.config_path}")
+            print(f"Attempting to load config from: {self.config_file}")
+            if not os.path.exists(self.config_file):
+                print(f"Config file does not exist at: {self.config_file}")
                 raise FileNotFoundError
-            with open(self.config_path, "r") as f:
+            with open(self.config_file, "r") as f:
                 self.config = json.load(f)
             res = True
         except FileNotFoundError:
-            print(f"PAIA_CONFIG.json not found at {self.config_path}, using defaults")
+            print(f"PAIAConfig().json not found at {self.config_file}, using defaults")
         except (KeyError, json.JSONDecodeError) as e:
-            print(f"Invalid PAIA_CONFIG.json at {self.config_path}: {str(e)}, using defaults")
+            print(f"Invalid PAIAConfig().json at {self.config_file}: {str(e)}, using defaults")
         except PermissionError as e:
-            print(f"Permission denied for PAIA_CONFIG.json at {self.config_path}: {str(e)}, using defaults")
+            print(f"Permission denied for PAIAConfig().json at {self.config_file}: {str(e)}, using defaults")
         
         if not res:
-            self.config = self.default()
+            self.config = self.getDefault()
+            self.config_file = None
             print("Loading default config ( file not found or error )")
                 
+        self.__populateFromJSON(self.config)
         print(f"Loaded config: host={self.host}, port={self.port}, ui_dir={self.ui_dir}, logging_level={self.logging_level}, logging_dir={self.logging_dir}")
-
-        self.host = self.config["server"]["host"]
-        self.port = int(self.config["server"]["port"])
-        self.ui_dir = self.config["ui"]["directory"]
-        self.ui_host = self.config["ui"]["host"]
-        self.ui_port = int(self.config["ui"]["port"])
-        self.logging_level = self.config.get("logging", {}).get("level", "DEBUG")
-        self.logging_dir = self.config.get("logging", {}).get("dir", ".")
 
         # Load service-specific configs, overriding matching nodes
         service_dir = os.path.join(self.base_dir, "microservice")
@@ -89,6 +92,18 @@ class PAIAConfig(metaclass=PAIASingleton):
         self.configLoaded = True
         return self.config
 
+    def __populateFromJSON(self, config: json):
+        self.config = config
+        self.host = self.config.get("server",{}).get("host","localhost")
+        self.port =  int(self.config.get("server",{}).get("port",8000))
+        self.ui_dir = self.config.get("ui",{}).get("directory","ui")
+        self.ui_host = self.config.get("ui",{}).get("host","localhost")
+        self.ui_port =  int(self.config.get("ui",{}).get("port",8080))
+        self.logging_level = self.config.get("logging",{}).get("level","DEBUG")
+        self.logging_dir = self.config.get("logging",{}).get("dir","localhost")
+
+
+
     def _merge_service_config(self, global_config, service_config):
         """Recursively update global_config with service_config values."""
         for key, value in service_config.items():
@@ -96,5 +111,3 @@ class PAIAConfig(metaclass=PAIASingleton):
                 self._merge_service_config(global_config[key], value)
             else:
                 global_config[key] = value
-
-PAIA_CONFIG = PAIAConfig()

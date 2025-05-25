@@ -21,5 +21,5 @@ def test_logger_write(tmp_path):
     logger = PAIALogger().update(config = {"level": "DEBUG", "dir": str(log_dir)})
     assert logger.level == logging.DEBUG
     logger.info("Test message")
-    with open(os.path.join(log_dir, "app.log")) as f:
+    with open(os.path.join(str(log_dir), "app.log")) as f:
         assert "Test message" in f.read()

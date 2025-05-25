@@ -6792,3 +6792,128 @@ If this is a private repository, make sure to pass a token having permission to 
 2025-05-25 01:28:33,657 [Thread-21 (process_request_thread)] DEBUG: GET request: /services
 2025-05-25 01:28:33,658 [Thread-21 (process_request_thread)] INFO: Returning services: ['text-generator', 'text-to-image', 'text-to-speech', 'translate']
 2025-05-25 01:28:33,659 [Thread-21 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-25 03:07:37,529 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:07:41,365 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:07:41,365 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:07:43,193 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:07:43,194 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:07:43,402 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:07:43,404 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:07:43,415 [MainThread] INFO: Loading service: translate
+2025-05-25 03:07:43,416 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:07:43,421 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:07:43,421 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:07:43,426 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 03:07:43,437 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:07:50,377 [Thread-6 (process_request_thread)] DEBUG: GET request: /config
+2025-05-25 03:07:50,378 [Thread-6 (process_request_thread)] INFO: Returning config
+2025-05-25 03:07:50,379 [Thread-6 (process_request_thread)] DEBUG: Sent response: status=200, data={'logging': {'level': 'DEBUG', 'dir': '.', 'file_name': 'app.log', 'logfile_path': './app.log'}, 'server': {'host': 'localhost', 'port': 8000}, 'ui': {'autostart': True, 'directory': 'ui', 'host': 'localhost', 'port': 8080, 'theme': 'dark'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': False, 'streamable': True, 'parameters': [{'name': 'threshold', 'type': 'slider', 'label': 'Sentiment Threshold', 'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}]}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-25 03:07:50,642 [Thread-7 (process_request_thread)] DEBUG: GET request: /services
+2025-05-25 03:07:50,643 [Thread-7 (process_request_thread)] INFO: Returning services: ['text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-25 03:07:50,644 [Thread-7 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['text-generator', 'text-to-image', 'text-to-speech', 'translate']}
+2025-05-25 03:29:40,109 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 03:29:51,334 [MainThread] INFO: Generating ui/index.html
+2025-05-25 03:29:51,338 [MainThread] INFO: Generating ui/styles.css
+2025-05-25 03:29:51,341 [MainThread] INFO: Generating ui/api.js
+2025-05-25 03:29:51,345 [MainThread] INFO: Generating ui/script.js
+2025-05-25 03:29:53,277 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:29:56,772 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:29:56,773 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:29:58,291 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:29:58,292 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:29:58,467 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:29:58,468 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:29:58,480 [MainThread] INFO: Loading service: translate
+2025-05-25 03:29:58,481 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:29:58,485 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:29:58,485 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:29:58,488 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 03:29:58,500 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:30:21,527 [Thread-9 (process_request_thread)] DEBUG: GET request: /
+2025-05-25 03:30:21,528 [Thread-9 (process_request_thread)] WARNING: Unknown path: /
+2025-05-25 03:30:21,529 [Thread-9 (process_request_thread)] ERROR: Sent error: status=404, message=Not found
+2025-05-25 03:30:21,570 [Thread-11 (process_request_thread)] DEBUG: GET request: /favicon.ico
+2025-05-25 03:30:21,571 [Thread-11 (process_request_thread)] WARNING: Unknown path: /favicon.ico
+2025-05-25 03:30:21,572 [Thread-11 (process_request_thread)] ERROR: Sent error: status=404, message=Not found
+2025-05-25 03:30:30,840 [Thread-12 (process_request_thread)] DEBUG: GET request: /config
+2025-05-25 03:30:30,841 [Thread-12 (process_request_thread)] INFO: Returning config
+2025-05-25 03:30:30,842 [Thread-12 (process_request_thread)] DEBUG: Sent response: status=200, data={'logging': {'level': 'DEBUG', 'dir': '.', 'file_name': 'app.log', 'logfile_path': './app.log'}, 'server': {'host': 'localhost', 'port': 8000}, 'ui': {'autostart': True, 'directory': 'ui', 'host': 'localhost', 'port': 8080, 'theme': 'dark'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': False, 'streamable': True, 'parameters': [{'name': 'threshold', 'type': 'slider', 'label': 'Sentiment Threshold', 'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}]}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-25 03:30:58,799 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 03:39:24,111 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:39:27,219 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:39:27,220 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:39:28,955 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:39:28,956 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:39:29,131 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:39:29,132 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:39:29,142 [MainThread] INFO: Loading service: translate
+2025-05-25 03:39:29,143 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:39:29,146 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:39:29,146 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:39:29,149 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 03:39:29,160 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:41:39,635 [MainThread] INFO: Generating ui/index.html
+2025-05-25 03:41:39,639 [MainThread] INFO: Generating ui/styles.css
+2025-05-25 03:41:39,643 [MainThread] INFO: Generating ui/api.js
+2025-05-25 03:41:39,647 [MainThread] INFO: Generating ui/script.js
+2025-05-25 03:41:42,172 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:41:45,338 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:41:45,339 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:41:46,767 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:41:46,768 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:41:46,923 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:41:46,924 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:41:46,934 [MainThread] INFO: Loading service: translate
+2025-05-25 03:41:46,935 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:41:46,939 [MainThread] INFO: Port 8000 is in use
+2025-05-25 03:41:46,939 [UI Server] INFO: Port 8080 is in use
+2025-05-25 03:45:14,054 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:45:18,492 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:45:18,493 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:45:20,617 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:45:20,618 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:45:20,818 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:45:20,818 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:45:20,829 [MainThread] INFO: Loading service: translate
+2025-05-25 03:45:20,830 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:45:20,832 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:45:20,833 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:45:20,849 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:45:20,870 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 03:46:14,773 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 03:46:17,252 [MainThread] INFO: Generating ui/index.html
+2025-05-25 03:46:17,255 [MainThread] INFO: Generating ui/styles.css
+2025-05-25 03:46:17,259 [MainThread] INFO: Generating ui/api.js
+2025-05-25 03:46:17,263 [MainThread] INFO: Generating ui/script.js
+2025-05-25 03:46:19,504 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:46:21,602 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:46:21,603 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:46:22,570 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:46:22,571 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:46:22,676 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:46:22,677 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:46:22,687 [MainThread] INFO: Loading service: translate
+2025-05-25 03:46:22,688 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:46:22,690 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:46:22,691 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:46:22,710 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:46:38,633 [MainThread] INFO: Thread[MainThread] : Server[Main Server] shutting down at http://localhost:8000
+2025-05-25 03:46:41,100 [MainThread] INFO: Skipping disabled service: sentiment-analyzer
+2025-05-25 03:46:43,306 [MainThread] INFO: Loading service: text-generator
+2025-05-25 03:46:43,307 [MainThread] INFO: Loaded service: text-generator
+2025-05-25 03:46:44,354 [MainThread] INFO: Loading service: text-to-image
+2025-05-25 03:46:44,355 [MainThread] INFO: Loaded service: text-to-image
+2025-05-25 03:46:44,472 [MainThread] INFO: Loading service: text-to-speech
+2025-05-25 03:46:44,473 [MainThread] INFO: Loaded service: text-to-speech
+2025-05-25 03:46:44,484 [MainThread] INFO: Loading service: translate
+2025-05-25 03:46:44,485 [MainThread] INFO: Loaded service: translate
+2025-05-25 03:46:44,488 [MainThread] INFO: Port 8000 is available
+2025-05-25 03:46:44,488 [UI Server] INFO: Port 8080 is available
+2025-05-25 03:46:44,507 [UI Server] INFO: Thread[UI Server] : Server[UI Server] running at http://localhost:8080
+2025-05-25 03:46:44,528 [MainThread] INFO: Thread[MainThread] : Server[Main Server] running at http://localhost:8000
+2025-05-25 03:46:57,100 [Thread-6 (process_request_thread)] DEBUG: GET request: /config
+2025-05-25 03:46:57,101 [Thread-6 (process_request_thread)] INFO: Returning config
+2025-05-25 03:46:57,102 [Thread-6 (process_request_thread)] DEBUG: Sent response: status=200, data={'logging': {'level': 'DEBUG', 'dir': '.', 'file_name': 'app.log', 'logfile_path': './app.log'}, 'server': {'host': 'localhost', 'port': 8000}, 'ui': {'autostart': True, 'directory': 'ui', 'host': 'localhost', 'port': 8080, 'theme': 'dark'}, 'services': {'translate': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'source_language', 'type': 'select', 'label': 'Source Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}, {'name': 'target_language', 'type': 'select', 'label': 'Target Language', 'options': [{'value': 'cs', 'label': 'Czech'}, {'value': 'en', 'label': 'English'}, {'value': 'fr', 'label': 'French'}, {'value': 'de', 'label': 'German'}]}]}, 'text-to-image': {'enabled': True, 'streamable': False, 'parameters': [{'name': 'height', 'type': 'select', 'label': 'Image Height', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'width', 'type': 'select', 'label': 'Image Width', 'options': [{'value': 256, 'label': '256px'}, {'value': 512, 'label': '512px'}, {'value': 768, 'label': '768px'}, {'value': 1024, 'label': '1024px'}]}, {'name': 'guidance_scale', 'type': 'slider', 'label': 'Guidance Scale', 'min': 1.0, 'max': 20.0, 'step': 0.5, 'value': 8.0}, {'name': 'num_inference_steps', 'type': 'slider', 'label': 'Inference Steps', 'min': 10, 'max': 100, 'step': 5, 'value': 20}, {'name': 'negative_prompt', 'type': 'textbox', 'label': 'Negative Prompt', 'placeholder': 'Enter negative prompt (e.g., ugly, low quality)', 'rows': 2}]}, 'text-generator': {'enabled': True, 'streamable': True, 'parameters': [{'name': 'max_length', 'type': 'select', 'label': 'Max Length', 'options': [{'value': 50, 'label': 'Short (50 tokens)'}, {'value': 100, 'label': 'Medium (100 tokens)'}, {'value': 200, 'label': 'Long (200 tokens)'}]}, {'name': 'prefix', 'type': 'text', 'label': 'Custom Prefix', 'placeholder': 'Enter a prefix (e.g., Story:)'}, {'name': 'context', 'type': 'textbox', 'label': 'Context', 'placeholder': 'Enter multi-line context or background', 'rows': 4}]}, 'text-analyzer': {'enabled': True, 'streamable': False, 'parameters': []}, 'sentiment-analyzer': {'enabled': False, 'streamable': True, 'parameters': [{'name': 'threshold', 'type': 'slider', 'label': 'Sentiment Threshold', 'min': 0.0, 'max': 1.0, 'step': 0.1, 'value': 0.5}]}, 'text-summarizer': {'enabled': True, 'streamable': False, 'parameters': []}}}
+2025-05-25 03:46:57,350 [Thread-7 (process_request_thread)] DEBUG: GET request: /services
+2025-05-25 03:46:57,351 [Thread-7 (process_request_thread)] INFO: Returning services: ['text-generator', 'text-to-image', 'text-to-speech', 'translate']
+2025-05-25 03:46:57,352 [Thread-7 (process_request_thread)] DEBUG: Sent response: status=200, data={'services': ['text-generator', 'text-to-image', 'text-to-speech', 'translate']}

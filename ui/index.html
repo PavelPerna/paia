@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>PAIA AI Microservice</h1>
+        <div class="header">
+            <h1>PAIA AI Microservice</h1>
+            <button id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+        </div>
         <div id="history" class="history"></div>
         <div class="input-section">
             <select id="service-select">
@@ -18,12 +21,12 @@
             <div class="query-container">
                 <input type="text" id="query-input" placeholder="Enter your query">
                 <input type="file" id="file-upload" accept=".txt" title="Upload a text file">
-                <button id="mic-btn" title="Record voice input">Voice</button>
+                <button id="mic-btn" title="Record voice input">🎤</button>
             </div>
             <button id="submit-btn">Submit</button>
         </div>
     </div>
-    <script src="api.js" type="module"></script>
-    <script src="script.js" type="module"></script>
+    <script type="module" src="api.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

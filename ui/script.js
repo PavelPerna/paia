@@ -9,10 +9,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const micBtn = document.getElementById('mic-btn');
     const submitBtn = document.getElementById('submit-btn');
     const historyDiv = document.getElementById('history');
+    const themeToggle = document.getElementById('theme-toggle');
     let config = {};
     let serverUrl = 'http://localhost:8000';
     let recognition = null;
     let isRecording = false;
+
+    // Theme Toggle Handler
+    const setTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', theme);
+    };
+
+    // Load saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    });
 
     // Initialize Speech Recognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -30,14 +48,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         recognition.onend = () => {
             isRecording = false;
             micBtn.classList.remove('recording');
-            micBtn.textContent = 'Voice';
+            micBtn.textContent = '🎤';
         };
         recognition.onerror = (event) => {
             console.error(`Speech recognition error: ${event.error}`);
             addToHistory(`Error: Speech recognition failed - ${event.error}`, 'error');
             isRecording = false;
             micBtn.classList.remove('recording');
-            micBtn.textContent = 'Voice';
+            micBtn.textContent = '🎤';
         };
     } else {
         micBtn.disabled = true;
@@ -73,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             recognition.start();
             isRecording = true;
             micBtn.classList.add('recording');
-            micBtn.textContent = 'Stop';
+            micBtn.textContent = '⏹';
         }
     });
 
@@ -271,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         textSpan.textContent = `Response: ${text}`;
         const playBtn = document.createElement('button');
         playBtn.className = 'play-btn';
-        playBtn.textContent = 'Play';
+        playBtn.textContent = '▶';
         playBtn.title = 'Play response';
         playBtn.addEventListener('click', () => {
             const utterance = new SpeechSynthesisUtterance(text);

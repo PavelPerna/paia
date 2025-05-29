@@ -28,7 +28,7 @@ def mock_query(mock_data:json,mock_service:str):
 
 def test_text_to_image(tmp_path):
     log_dir = tmp_path / "logs"
-    os.mkdir(str(log_dir),777)
+    os.mkdir(str(log_dir))
     with open(os.path.join(str(log_dir),"app.log"), 'w', encoding='utf-8') as f:
         f.write("kunda")
     mock_query(mock_data={"text":"Test mock","height":"256","width":"256","output_path":str(log_dir),"stream":False},mock_service="text-to-image")

@@ -6,7 +6,7 @@ class SingletonTestClass(metaclass=PAIASingleton):
         self.value = value
         
 
-def test_singleton_behavior(setup):
+def test_singleton_behavior(dir_fix):
     instance1 = SingletonTestClass(value=1)
     instance2 = SingletonTestClass(value=2)
     assert instance1 is instance2, "Instances should be the same"

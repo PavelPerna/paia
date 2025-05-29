@@ -9,7 +9,7 @@ def ui_dir(tmp_path):
     ui_dir.mkdir()
     return ui_dir
 
-def test_build_ui_generation(ui_dir, monkeypatch):
+def test_build_ui_generation(ui_dir, dir_fix):
     PAIAConfig().ui_dir = str(ui_dir)
     from build import build_ui
     build_ui()

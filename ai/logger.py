@@ -6,24 +6,24 @@ import json
 from ai import PAIAConfig, PAIASingleton
 
 class PAIALogger(metaclass=PAIASingleton):
-    config = {"level": "INFO", "dir": ".", "file_name":"app.log"}
+    config = {"level": "DEBUG", "dir": ".", "file_name":"app.log"}
     def __init__(self):
         self.loggerLoaded = False
         self.logger = None
         self.config = PAIAConfig().getConfig().get("logging")
         self.__populateFromConfig(self.config)
         
-    def __populateFromConfig(self, config:json = False):
-        if not config:
-            config = self.config
+    def __populateFromConfig(self, config:json = None):
+        self.config = config
         self.logging_dir = config.get("dir",".")
         self.logging_file = config.get("file_name","app.log")
         self.logging_fullpath = os.path.join(self.logging_dir,self.logging_file)
-        self.level = getattr(logging, config.get("level", "INFO"), logging.INFO)
+        self.level = config.get("level","INFO")
+
     
     def __loadLogger(self):
-        if not self.loggerLoaded:
-            self.__populateFromConfig()
+        if self.loggerLoaded == False:
+            self.__populateFromConfig(self.config)
             os.makedirs(self.logging_dir, exist_ok=True)
             self.logger = logging.getLogger('AIMicroService')
             self.logger.setLevel(self.level)
@@ -37,10 +37,10 @@ class PAIALogger(metaclass=PAIASingleton):
             self.loggerLoaded = True
         return self.logger
     
-    def update(self,config:json):
-        if not self.config == config:
+    def update(self,config:json = None):
+        self.loggerLoaded = False
+        if config:
             self.config = config
-            self.loggerLoaded = False
         return self.__loadLogger()
 
     def getLogger(self):

@@ -2,7 +2,7 @@
 from .base_service import AIMicroService
 from transformers import pipeline, AutoModel, AutoTokenizer
 from ai import *
-import threading
+import io
 import os
 import torch
 
@@ -12,12 +12,10 @@ class TextToImageService(AIMicroService):
 
     def loadModel(self):
         try:
-            model_id = "stablediffusionapi/uber-realistic-porn-merge"
+            model_id = "gpt2"
             PAIALogger().info(f"Loading model : {model_id}")
-            self.model = AutoModel.from_pretrained(model_id).to("cuda")
-            self.tokenizer = AutoTokenizer.from_pretrained(model_id)
-            self.imager = pipeline(model=self.model,torch_dtype=torch.float16,trust_remote_code=True,tokenizer=self.tokenizer)
-            PAIALogger().info(f"TextToImageService initialized with { self.model}")
+            self.imager = pipeline(model=model_id,torch_dtype=torch.float16,trust_remote_code=True)
+            PAIALogger().info(f"TextToImageService initialized with { model_id}")
             self.modelLoaded = True
         except Exception as e:
             PAIALogger().error(f"Failed to load model: {str(e)}")
@@ -26,10 +24,10 @@ class TextToImageService(AIMicroService):
     def process(self, query):
         if not self.modelLoaded:
             self.loadModel()
-
         prompt = query.get("text", "")
         height = int(query.get("height", 256))
         width = int(query.get("width", 256))
+        output_path = query.get("output_path", "ui/image")
         guidance_scale = float(query.get("guidance_scale", 6.3))
         num_inference_steps = int(query.get("num_inference_steps", 10))
         negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
@@ -44,8 +42,8 @@ class TextToImageService(AIMicroService):
             safe_prompt = "".join(c for c in prompt if c.isalnum() or c in " _-").strip()[:50]
             if not safe_prompt:
                 safe_prompt = "image"
-            image_path = f"ui/image/{safe_prompt}_{threading.current_thread().name}.png"
-            os.makedirs("ui/image", exist_ok=True)
+            image_path = f"{output_path}/{safe_prompt}.png"
+            os.mkdir(f"{output_path}", exist_ok=True)
 
             result = self.imager(
                 prompt=prompt,
@@ -56,14 +54,15 @@ class TextToImageService(AIMicroService):
                 height=height,
 
             )["images"][0]
-
-            result.save(image_path)
-            image_url = f"http://localhost:8080/ui/image/{safe_prompt}_{threading.current_thread().name}.png"
-            PAIALogger().info(f"Generated image: {image_url}")
-            yield {"result": image_url, "type": "image"}
+            buffer = io.BytesIO()
+            result.save(buffer, format="PNG")
+            image_url = f"http://localhost:8080/ui/image/{safe_prompt}.png"
+            PAIALogger().getLogger().info(f"Generated image: {image_url}")
+            PAIALogger().getLogger().debug(f"Generated image: {result}")
+            yield {"result": image_url, "type": "image","image_path":image_path}
 
         except Exception as e:
-            PAIALogger().error(f"Error in image generation: {str(e)}")
+            PAIALogger().getLogger().error(f"Error in image generation: {str(e)}")
             yield {"error": f"Image generation failed: {str(e)}"}
 
         PAIALogger().debug("End thread")

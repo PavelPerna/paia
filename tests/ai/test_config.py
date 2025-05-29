@@ -3,7 +3,7 @@ import pytest
 import json
 from ai import PAIAConfig
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True,scope="function")
 def config_json(tmp_path):
     config_file = tmp_path / "config.json"
     config_data = {
@@ -13,6 +13,21 @@ def config_json(tmp_path):
     }
     config_file.write_text(json.dumps(config_data))
     return config_file
+
+@pytest.fixture(autouse=True,scope="function")
+def config_json_malformed(tmp_path):
+    config_file = tmp_path / "config_malformed.json"
+    config_file.write_text("{mal for mm;sdas meeet!")
+    return config_file
+
+
+@pytest.fixture(autouse=True,scope="function")
+def config_json_access(tmp_path):
+    config_file = tmp_path / "config_access.json"
+    config_file.write_text("test")
+    config_file.chmod(411)
+    return config_file
+
 
 def test_config_singleton():
     config1 = PAIAConfig()
@@ -27,6 +42,14 @@ def test_config_load(config_json):
 
 def test_config_missing_file(tmp_path):
     config = PAIAConfig().update(config_file=str(tmp_path / "missing.json"))
+    assert config.get("is_default", False) == True
+
+def test_config_malformed_file(config_json_malformed):
+    config = PAIAConfig().update(config_file=str(config_json_malformed))
+    assert config.get("is_default", False) == True
+
+def test_config_access_file(config_json_access):
+    config = PAIAConfig().update(config_file=str(config_json_access))
     assert config.get("is_default", False) == True
 
 def test_config_ui_dir(config_json):

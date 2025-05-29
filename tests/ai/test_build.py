@@ -11,7 +11,7 @@ def ui_dir(tmp_path):
 
 def test_build_ui_generation(ui_dir, dir_fix):
     PAIAConfig().ui_dir = str(ui_dir)
-    from build import build_ui
+    from build_ui import build_ui
     build_ui()
     assert os.path.exists(ui_dir / "index.html")
     assert os.path.exists(ui_dir / "styles.css")

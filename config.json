@@ -69,6 +69,7 @@
       ]
     },
     "text-to-image": {
+      "clear_form_after_query": false,
       "enabled": true,
       "streamable": false,
       "parameters": [
@@ -197,6 +198,9 @@
       "enabled": true,
       "streamable": false,
       "parameters": []
+    },
+    "text-to-speech":{
+      "enabled": true
     }
   }
 }

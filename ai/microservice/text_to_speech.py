@@ -1,37 +1,25 @@
 # ai/microservice/text_generator.py
 from .base_service import AIMicroService
-from diffusers import DiffusionPipeline
+from transformers import pipeline
 from ai import *
-import threading
+import soundfile as sf
 import os
+from pathlib import Path
+from gtts import gTTS
 
 class TextToSpeechService(AIMicroService):
     def __init__(self):
         self.modelLoaded = False
 
     def loadModel(self):
-        model_id = "Heartsync/NSFW-Uncensored"
-        try:
-            self.imager = DiffusionPipeline.from_pretrained(
-                model_id
-            ).to("cuda")
-            PAIALogger().info(f"TextToImageService initialized with {model_id}")
-            self.modelLoaded = True
-        except Exception as e:
-            PAIALogger().error(f"Failed to load model: {str(e)}")
-            raise
+        pass
 
     def process(self, query):
-        if not self.modelLoaded:
-            self.loadModel()
-
         prompt = query.get("text", "")
-        height = int(query.get("height", 512))
-        width = int(query.get("width", 512))
-        guidance_scale = float(query.get("guidance_scale", 8.0))
-        num_inference_steps = int(query.get("num_inference_steps", 20))
-        negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
-        PAIALogger().debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
+        lang = query.get("lang", "cs")
+        output_path = os.path.join(PAIAConfig().getUIDirectory(),"sound")
+        output_addr = f"{PAIAConfig().getUIAddress()}/sound/"
+        PAIALogger().debug(f"Processing query: prompt='{prompt}'")
 
         if not prompt:
             PAIALogger().error("No prompt provided")
@@ -41,23 +29,19 @@ class TextToSpeechService(AIMicroService):
         try:
             safe_prompt = "".join(c for c in prompt if c.isalnum() or c in " _-").strip()[:50]
             if not safe_prompt:
-                safe_prompt = "image"
-            image_path = f"ui/image/{safe_prompt}_{threading.current_thread().name}.png"
-            os.makedirs("ui/image", exist_ok=True)
+                safe_prompt = "sound"
+                
+            res_path = f"{output_path}/{safe_prompt}.mp3"
+            res_addr = f"{output_addr}/{safe_prompt}.mp3"
 
-            result = self.imager(
-                prompt=prompt,
-                negative_prompt=negative_prompt,
-                num_inference_steps=num_inference_steps,
-                guidance_scale=guidance_scale,
-                width=width,
-                height=height
-            )["images"][0]
+            path = Path(output_path)
+            path.mkdir(exist_ok=True,parents=True)
 
-            result.save(image_path)
-            image_url = f"http://localhost:8080/image/{safe_prompt}_{threading.current_thread().name}.png"
-            PAIALogger().info(f"Generated image: {image_url}")
-            yield {"result": image_url, "type": "image"}
+            result = gTTS(text=prompt, slow=False, lang=lang)
+            result.save(res_path)
+            
+            PAIALogger().info(f"Generated sound: {res_addr}")
+            yield {"result": res_addr, "type": "audio"}
 
         except Exception as e:
             PAIALogger().error(f"Error in image generation: {str(e)}")

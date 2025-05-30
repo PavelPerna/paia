@@ -21,6 +21,7 @@ class PAIAUIHandler(http.server.SimpleHTTPRequestHandler):
         super().__init__(*args, **kwargs, directory=PAIAConfig().ui_dir)
 
 
+
 class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         PAIALogger().debug(f"GET request: {self.path}")
@@ -35,7 +36,7 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
         elif self.path == "/config":
             try:
                 PAIALogger().info("Returning config")
-                self.__send_response(200, PAIAConfig().get())
+                self.__send_response(200, PAIAConfig().getConfig())
             except:
                 PAIALogger().error(f"Permission denied for config file : {PAIAConfig().config_file}")
                 self.__send_error(500, "Permission denied for config file")
@@ -127,87 +128,109 @@ class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({"error": message}).encode('utf-8'))
         PAIALogger().error(f"Sent error: status={status}, message={message}")
 
-
 class PAIAApplication:
     def __init__(self):
+        PAIALogger().info("PAIAApplication Start")
+        self.servers = []
         parser=argparse.ArgumentParser()
-        parser.add_argument("--ui-autostart", choices=['1', 'True', 'true'])
+        parser.add_argument("--ui-autostart",required=False, choices=[True,False], dest='ui_autostart', type=bool, help='Automatically start User interface service')
         self.args=parser.parse_args()
-
+        
     def __getCurrentThread(self):
         return threading.current_thread()
-    
-    def is_port_in_use(self, host : str, port :int) -> bool:
+        
+    def port_available(self, ip : str, port : int) -> bool:
+        res = False
         try:
-            conn = http.client.HTTPConnection(host, port, timeout=1)
-            conn.request("HEAD", "/")
-            conn.close()
-            PAIALogger().info(f"Port {port} is in use")
-            return True
-        except (http.client.HTTPException, ConnectionRefusedError, socket.timeout):
-            PAIALogger().info(f"Port {port} is available")
-            return False
-
-    def run_server(self, host :str = "localhost", port :int = 8000, server : type = http.server.ThreadingHTTPServer, handler: type = http.server.BaseHTTPRequestHandler, description : str = "Default server" ):
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+            #sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+            sock.settimeout(2)
+            result = sock.connect_ex((ip,port))
+            PAIALogger().debug(f"Port test: {result}")       
+            if result == 0:
+                PAIALogger().debug(f"Port is open")            
+                res = True
+            sock.close()
+        except Exception as e:
+            PAIALogger().debug(f"{str(e)}")
+            res = True 
+        return res
+            
+    def run_server(self, host :str = "localhost", port :int = 8000, server : type = http.server.ThreadingHTTPServer, handler: type = http.server.BaseHTTPRequestHandler, description : str = "Default server" ,retry_count :int = 3,retry_wait : int = 1):
         # Check if available
-        if self.is_port_in_use(host,port):
-            raise Exception(f"Thread[{self.__getCurrentThread().name}] : [{description}] : Port is in use {host}:{port}")
-        # Start 
-        with server((host, port), handler) as srv:
+        ok = False
+        retry_count_current = 0
+        retry_str = ""
+        while retry_count_current < retry_count and not ok:
+            retry_count_current = retry_count_current + 1
+            retry_str = f"Retry ({retry_count_current})" if retry_count_current > 0 else ""
+            if not self.port_available(host, port):
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : Port is in use {host}:{port} {retry_str}")
+            else:
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : Port free {host}:{port} {retry_str}")
+                
+            # Start 
             try:
-                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] running at http://{host}:{port}")
-                srv.serve_forever()
-            except KeyboardInterrupt:
-                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Server[{description}] shutting down at http://{host}:{port}")
-                srv.server_close()
+                with server((host, port), handler) as srv:
+                    if not srv in self.servers:
+                        self.servers.append(srv)
+                    PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Run server - Server[{description}] running at http://{host}:{port}")
+                    ok = True
+                    srv.serve_forever()    
+            except:
+                ok = False        
 
-    def retry(self, what: callable , retry_count : int = 3, retry_wait : int = 1):
-        i = 0
-        sanityCheck = 0
-        while i < retry_count:
-            sanityCheck = sanityCheck + 1
-            if(sanityCheck > 100):
-                raise Exception('Too many retries')
-            try:
-                what
-                i = retry_count             
-                break
-            except Exception as e:
-                PAIALogger().info(f"Operation {str(what)} failed with {str(e)}")
-                PAIALogger().info(f"Retry({i}/{retry_count}) - waiting {retry_wait} seconds")
-                time.sleep(retry_wait)
-            i = i + 1
+            time.sleep(retry_wait)
+
+        if not ok:
+            PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : {host}:{port} {retry_str}   - FAILED!!!")
+            
 
 
     def ui_server(self):  
-        self.retry(
-            what = self.run_server(
+        self.run_server(
                 host=PAIAConfig().ui_host,
                 port=PAIAConfig().ui_port,
                 server=PAIAServer,
                 handler=PAIAUIHandler,
-                description="UI Server"
-            )
+                description="UI Server",
+                retry_count=10,
+                retry_wait=1
         )
+ 
     
     def service_server(self):
-        self.retry(
-            what = self.run_server(
-                host=PAIAConfig().host,
-                port=PAIAConfig().port,
-                server=PAIAServer,
-                handler=PAIAServiceHandler,
-                description="Main Server"
-            )
+        self.run_server(
+            host=PAIAConfig().host,
+            port=PAIAConfig().port,
+            server=PAIAServer,
+            handler=PAIAServiceHandler,
+            description="Service Server",
+                retry_count=10,
+                retry_wait=1
         )
 
     def run(self):
         if PAIAConfig().getConfig().get("ui",{}).get("autostart",True):
-            ui_server_thread = threading.Thread(target=self.ui_server,daemon=True,name="UI Server")
-            ui_server_thread.start()
-        service_server_thread = threading.Thread(target=self.service_server(),daemon=True,name="Service Server")
-        service_server_thread.start()
+            self.ui_server_thread = threading.Thread(target=self.ui_server,daemon=True, name="UI Thread",)
+            self.ui_server_thread.start()
+        self.service_server_thread = threading.Thread(target=self.service_server,daemon=True,name="Service Thread")
+        self.service_server_thread.start()
+        while True:
+            time.sleep(1)
+    
+    def __del__(self):
+        PAIALogger().info("PAIAApplication Shutting down")
+        for server in self.servers:
+            PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Shutting down {str(server)}")
+            server.server_close()
+        
+        
         
 if __name__ == "__main__":
-    app = PAIAApplication()
-    app.run()
+    try:
+        app = PAIAApplication()
+        app.run()
+    except KeyboardInterrupt:
+        app.__del__()
+

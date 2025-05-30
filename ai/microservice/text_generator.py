@@ -7,8 +7,6 @@ import time
 
 class TextGenerationService(AIMicroService):
     def __init__(self):
-        self.conversation = {}
-        self.chat_history_ids = None
         self.modelLoaded = False
 
     def loadModel(self):
@@ -48,14 +46,14 @@ class TextGenerationService(AIMicroService):
             full_prompt = f"{prefix} {prompt}".strip()
             PAIALogger().debug(f"Full prompt: {full_prompt}")
             input_ids = self.tokenizer.encode(full_prompt, return_tensors="pt").to("cuda")
-            bot_input_ids = torch.cat([self.chat_history_ids, input_ids], dim=-1) if len(self.chat_history_ids) > 0 else input_ids
             attention_mask = torch.ones(input_ids.shape, dtype=torch.long).to("cuda")
 
+            generated_ids = input_ids
             self.model.eval()
             with torch.no_grad():
                 for step in range(max_length - input_ids.shape[1]):
-                    self.chat_history_ids = self.model(bot_input_ids, attention_mask=attention_mask)
-                    next_token_logits = self.chat_history_ids.logits[:, -1, :]
+                    outputs = self.model(generated_ids, attention_mask=attention_mask)
+                    next_token_logits = outputs.logits[:, -1, :]
                     next_token_id = torch.argmax(next_token_logits, dim=-1).unsqueeze(-1)
                     generated_ids = torch.cat((generated_ids, next_token_id), dim=1)
                     attention_mask = torch.cat((attention_mask, torch.ones((1, 1), dtype=torch.long).to("cuda")), dim=1)
@@ -63,7 +61,7 @@ class TextGenerationService(AIMicroService):
                     generated_text = self.tokenizer.decode(generated_ids[0], skip_special_tokens=True)
                     PAIALogger().debug(f"Generated text: {generated_text}")
                     yield {"result": generated_text}
-                    
+
 
                     if next_token_id.item() == self.tokenizer.eos_token_id:
                         PAIALogger().info("EOS token reached")

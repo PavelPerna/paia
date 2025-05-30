@@ -7,10 +7,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="container">
         <div class="header">
             <h1>PAIA AI Microservice</h1>
-            <button id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+            <div class="header-buttons">
+                <button id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
+                <button id="fullscreen-toggle" title="Toggle Fullscreen/Window">⛶</button>
+            </div>
         </div>
         <div id="history" class="history"></div>
         <div class="input-section">
@@ -20,8 +23,6 @@
             <div id="dynamic-selectors" class="dynamic-selectors"></div>
             <div class="query-container">
                 <input type="text" id="query-input" placeholder="Enter your query">
-                <input type="file" id="file-upload" accept=".txt" title="Upload a text file">
-                <button id="mic-btn" title="Record voice input">🎤</button>
             </div>
             <button id="submit-btn">Submit</button>
         </div>

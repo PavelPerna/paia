@@ -49,6 +49,9 @@ class PAIALogger(metaclass=PAIASingleton):
     def info(self, val):
         return self.__loadLogger().info(val)
 
+    def warning(self, val):
+        return self.__loadLogger().warning(val)    
+
     def error(self, val):
         return self.__loadLogger().error(val)
 

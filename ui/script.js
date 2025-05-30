@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const serviceSelect = document.getElementById('service-select');
     const dynamicSelectors = document.getElementById('dynamic-selectors');
     const queryInput = document.getElementById('query-input');
-    const fileUpload = document.getElementById('file-upload');
     const micBtn = document.getElementById('mic-btn');
     const submitBtn = document.getElementById('submit-btn');
     const historyDiv = document.getElementById('history');
     const themeToggle = document.getElementById('theme-toggle');
+    const fullscreenToggle = document.getElementById('fullscreen-toggle');
     let config = {};
     let serverUrl = 'http://localhost:8000';
     let recognition = null;
@@ -32,67 +32,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         setTheme(newTheme);
     });
 
-    // Initialize Speech Recognition
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-        recognition.onresult = (event) => {
-            const transcript = Array.from(event.results)
-                .map(result => result[0].transcript)
-                .join('');
-            queryInput.value = transcript;
-        };
-        recognition.onend = () => {
-            isRecording = false;
-            micBtn.classList.remove('recording');
-            micBtn.textContent = '🎤';
-        };
-        recognition.onerror = (event) => {
-            console.error(`Speech recognition error: ${event.error}`);
-            addToHistory(`Error: Speech recognition failed - ${event.error}`, 'error');
-            isRecording = false;
-            micBtn.classList.remove('recording');
-            micBtn.textContent = '🎤';
-        };
-    } else {
-        micBtn.disabled = true;
-        micBtn.title = 'Speech recognition not supported';
-    }
-
-    // File Upload Handler
-    fileUpload.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file && file.type === 'text/plain') {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                queryInput.value = e.target.result;
-                addToHistory(`File uploaded: ${file.name}`, 'request');
-            };
-            reader.onerror = () => {
-                addToHistory('Error: Failed to read file', 'error');
-            };
-            reader.readAsText(file);
+    // Fullscreen Toggle Handler
+    const setFullscreen = (isFullscreen) => {
+        const content_element = document.getElementById("container");
+        if (isFullscreen) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error(`Fullscreen error: ${err.message}`);
+                addToHistory(`Error: Failed to enter fullscreen - ${err.message}`, 'error');
+            });
+            fullscreenToggle.textContent = '🗕';
+            fullscreenToggle.title = 'Exit Fullscreen';
+            content_element.setAttribute('class', 'container content-wide');
         } else {
-            addToHistory('Error: Please upload a .txt file', 'error');
+            document.exitFullscreen().catch(err => {
+                console.error(`Exit fullscreen error: ${err.message}`);
+                addToHistory(`Error: Failed to exit fullscreen - ${err.message}`, 'error');
+            });
+            fullscreenToggle.textContent = '⛶';
+            fullscreenToggle.title = 'Enter Fullscreen';
+            content_element.setAttribute('class', 'container content-narrow');
         }
-        fileUpload.value = ''; // Reset input
+    };
+
+    fullscreenToggle.addEventListener('click', () => {
+        const isFullscreen = document.fullscreenElement !== null;
+        setFullscreen(!isFullscreen);
     });
 
-    // Microphone Button Handler
-    micBtn.addEventListener('click', () => {
-        if (!recognition) return;
-        if (isRecording) {
-            recognition.stop();
-        } else {
-            queryInput.value = '';
-            recognition.start();
-            isRecording = true;
-            micBtn.classList.add('recording');
-            micBtn.textContent = '⏹';
-        }
+    // Update button state when fullscreen changes
+    document.addEventListener('fullscreenchange', () => {
+        const isFullscreen = document.fullscreenElement !== null;
+        fullscreenToggle.textContent = isFullscreen ? '🗕' : '⛶';
+        fullscreenToggle.title = isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen';
+        const content_element = document.getElementById("container");
+        content_element.setAttribute('class', isFullscreen ? 'container content-wide' : 'container content-narrow');
     });
 
     // Load Config and Services
@@ -244,9 +217,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     console.log(`Parsed SSE event: ${JSON.stringify(data)}`);
                                     if (data.result) {
                                         if (!responseEntry) {
-                                            responseEntry = createResponseEntry(data.result);
+                                            responseEntry = createResponseEntry(data);
                                             historyDiv.insertBefore(responseEntry, historyDiv.firstChild);
-                                        } else {
+                                        } else if (data.type !== 'audio') {
                                             responseEntry.querySelector('.response-text').textContent = `Response: ${data.result}`;
                                         }
                                         historyDiv.scrollTop = 0;
@@ -270,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             } else {
                 const data = await response.json();
-                const entry = createResponseEntry(data.result || JSON.stringify(data));
+                const entry = createResponseEntry(data);
                 historyDiv.insertBefore(entry, historyDiv.firstChild);
             }
         } catch (error) {
@@ -278,26 +251,55 @@ document.addEventListener('DOMContentLoaded', async () => {
             addToHistory(`Error: ${error.message}`, 'error');
         }
 
-        queryInput.value = '';
+        // Conditionally clear form based on service-specific or global config
+        const shouldClearForm = config.services?.[service]?.clear_form_after_query !== undefined
+            ? config.services[service].clear_form_after_query
+            : config.ui?.clear_form_after_query !== undefined
+            ? config.ui.clear_form_after_query
+            : true; // Default to true if not specified
+        if (shouldClearForm) {
+            queryInput.value = '';
+            dynamicSelectors.innerHTML = '';
+        }
     });
 
-    function createResponseEntry(text) {
+    function createResponseEntry(data) {
+        const text = data.result || JSON.stringify(data);
         const entry = document.createElement('div');
         entry.className = 'history-entry response';
-        const textSpan = document.createElement('span');
-        textSpan.className = 'response-text';
-        textSpan.textContent = `Response: ${text}`;
-        const playBtn = document.createElement('button');
-        playBtn.className = 'play-btn';
-        playBtn.textContent = '▶';
-        playBtn.title = 'Play response';
-        playBtn.addEventListener('click', () => {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            window.speechSynthesis.speak(utterance);
-        });
-        entry.appendChild(textSpan);
-        entry.appendChild(playBtn);
+        switch (data.type || "text") {
+            case 'image':
+                const img = document.createElement('img');
+                img.className = 'response-image';
+                img.src = data.result;
+                entry.appendChild(img);
+                break;
+            case 'audio':
+                const audio = document.createElement('audio');
+                audio.className = 'response-audio';
+                audio.controls = true;
+                audio.autoplay = true;
+                audio.src = data.result;
+                entry.appendChild(audio);
+                break;
+            default:
+                const textSpan = document.createElement('span');
+                textSpan.className = 'response-text';
+                textSpan.textContent = `Response: ${text}`;
+                const playBtn = document.createElement('button');
+                playBtn.className = 'play-btn';
+                playBtn.textContent = '▶';
+                playBtn.title = 'Play response';
+                playBtn.addEventListener('click', () => {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'en-US';
+                    window.speechSynthesis.speak(utterance);
+                });
+                entry.appendChild(textSpan);
+                entry.appendChild(playBtn);
+                break;
+        }
+
         return entry;
     }
 
@@ -306,9 +308,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         entry.className = `history-entry ${type}`;
         entry.textContent = message;
         historyDiv.insertBefore(entry, historyDiv.firstChild);
-        while (historyDiv.children.length > 50) {
-            historyDiv.removeChild(historyDiv.lastChild);
-        }
         historyDiv.scrollTop = 0;
     }
 });

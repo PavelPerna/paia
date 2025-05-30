@@ -2,9 +2,11 @@
 import os
 import importlib
 import inspect
+import threading
 from ai import PAIAConfig, PAIALogger
 
 PAIA_SERVICE_REGISTRY = {}
+PAIA_SERVICE_INSTANCE = {}
 
 class AIMicroService:
     def process(self, query):
@@ -35,10 +37,19 @@ def load_services():
                 PAIALogger().error(f"Error loading {service_name}: {str(e)}")
 
 def get_service(service_name):
+    service_lock = threading.Lock()
     service_class = PAIA_SERVICE_REGISTRY.get(service_name)
     if service_class:
-        PAIALogger().debug(f"Retrieved service: {service_name}")
-        return service_class()
+        try:
+            service_lock.acquire()
+            if not service_name in PAIA_SERVICE_INSTANCE:
+                PAIALogger().debug(f"Adding service: {service_name}")
+                PAIA_SERVICE_INSTANCE[service_name] = service_class()
+            result = PAIA_SERVICE_INSTANCE[service_name]
+            service_lock.release()
+        except Exception as e:
+            PAIALogger().debug(f"{str(e)}")
+        return result    
     PAIALogger().error(f"Service not found: {service_name}")
     return None
 

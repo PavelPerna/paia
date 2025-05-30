@@ -21,7 +21,8 @@ class PAIAConfig(metaclass=PAIASingleton):
     logging_level = "DEBUG"
     logging_dir = "."
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_file = os.path.join(base_dir,"..","config.json")
+    root_dir = os.path.abspath(os.path.join(base_dir,".."))
+    config_file = os.path.abspath(os.path.join(base_dir,"..","config.json"))
     
 
     def __init__(self, config_file: str = None):
@@ -37,6 +38,13 @@ class PAIAConfig(metaclass=PAIASingleton):
 
     def update(self, config_file: str = None):
         return self.__loadConfig(config_file)
+
+    def getUIDirectory(self ,ui_dir :str = None) -> str:
+        return os.path.join(self.root_dir,ui_dir if ui_dir else self.ui_dir)
+    
+    def getUIAddress(self,ui_dir :str = None) -> str:
+        return f"http://{self.ui_host}:{self.ui_port}"
+
 
     def __loadConfig(self, config_file: str = None):   
         if config_file and not self.config_file == config_file:

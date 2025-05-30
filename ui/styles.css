@@ -14,6 +14,8 @@
     --mic-btn-hover-bg: #0056b3;
     --mic-btn-recording-bg: #dc3545;
     --mic-btn-recording-hover-bg: #c82333;
+    --fullscreen-btn-bg: #6c757d;
+    --fullscreen-btn-hover-bg: #5a6268;
 }
 
 [data-theme="dark"] {
@@ -32,6 +34,8 @@
     --mic-btn-hover-bg: #1c86ee;
     --mic-btn-recording-bg: #ff5555;
     --mic-btn-recording-hover-bg: #ff3333;
+    --fullscreen-btn-bg: #adb5bd;
+    --fullscreen-btn-hover-bg: #909296;
 }
 
 body {
@@ -41,9 +45,13 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
-
-.container {
+.content-wide{
+    max-width: 100%;
+}
+.content-narrow{
     max-width: 800px;
+}
+.container {
     margin: 0 auto;
     background: var(--container-bg);
     padding: 20px;
@@ -58,7 +66,12 @@ body {
     margin-bottom: 20px;
 }
 
-#theme-toggle {
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#theme-toggle, #fullscreen-toggle {
     padding: 8px 12px;
     background-color: var(--button-bg);
     color: white;
@@ -70,6 +83,14 @@ body {
 
 #theme-toggle:hover {
     background-color: var(--button-hover-bg);
+}
+
+#fullscreen-toggle {
+    background-color: var(--fullscreen-btn-bg);
+}
+
+#fullscreen-toggle:hover {
+    background-color: var(--fullscreen-btn-hover-bg);
 }
 
 h1 {
@@ -113,6 +134,11 @@ h1 {
     max-width: 100%;
     height: auto;
     border-radius: 4px;
+    margin-top: 5px;
+}
+
+.history-entry audio {
+    max-width: 100%;
     margin-top: 5px;
 }
 

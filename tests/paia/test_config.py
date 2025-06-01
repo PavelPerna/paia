@@ -1,7 +1,7 @@
 # tests/test_config.py
 import pytest
 import json
-from ai import PAIAConfig
+from paia import PAIAConfig
 
 @pytest.fixture(autouse=True,scope="function")
 def config_json(tmp_path):

@@ -1,7 +1,7 @@
 # tests/test_build_ui.py
 import os
 import pytest
-from ai import PAIAConfig
+from paia import PAIAConfig
 
 @pytest.fixture
 def ui_dir(tmp_path):

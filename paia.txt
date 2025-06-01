@@ -1,0 +1,1320 @@
+# []/build_ui.py
+import os
+from paia import PAIAConfig, PAIALogger
+
+# Initialize logger and config via global singletons
+logger = PAIALogger().getLogger()
+config = PAIAConfig().getConfig()
+UI_DIR = PAIAConfig().ui_dir
+TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ui", "template")
+
+def write_file(filepath, content):
+    logger.info(f"Generating {filepath}")
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+    except Exception as e:
+        logger.error(f"Failed to write {filepath}: {str(e)}")
+        raise
+
+def read_template_file(filename):
+    template_path = os.path.join(TEMPLATE_DIR, filename)
+    logger.info(f"Reading template file: {template_path}")
+    try:
+        if not os.path.exists(template_path):
+            logger.error(f"Template file not found: {template_path}")
+            raise FileNotFoundError(f"Template file {template_path} does not exist")
+        with open(template_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        logger.error(f"Failed to read {template_path}: {str(e)}")
+        raise
+
+def build_ui():
+    # Create necessary directories
+    os.makedirs(UI_DIR, exist_ok=True)
+    os.makedirs(os.path.join(UI_DIR, "image"), exist_ok=True)
+
+    # List of template files to copy
+    template_files = {
+        "index.html": "index.html",
+        "styles.css": "styles.css",
+        "api.js": "api.js",
+        "script.js": "script.js"
+    }
+
+    # Read and write each template file
+    for src_filename, dest_filename in template_files.items():
+        try:
+            content = read_template_file(src_filename)
+            write_file(os.path.join(UI_DIR, dest_filename), content)
+        except Exception as e:
+            logger.error(f"Error processing {src_filename}: {str(e)}")
+            raise
+
+if __name__ == "__main__":
+    try:
+        build_ui()
+    except Exception as e:
+        logger.error(f"Failed to build UI: {str(e)}")
+        raise
+
+# []/conftest.py
+# content of conftest.py
+import pytest
+
+@pytest.fixture(scope="session", autouse=True)
+def dir_fix():
+    import os
+    import sys
+    parent_path = os.path.abspath(os.path.join(str(__file__),'..','..','..'))
+    sys.path.append(parent_path)
+
+# []/export.py
+import os
+import sys
+from pathlib import Path
+
+def export_project_to_file(root_dir, output_file):
+    """
+    Export all Python files in a project directory to a single file with formatted structure.
+    """
+    root_path = Path(root_dir).resolve()
+    with open(output_file, 'w', encoding='utf-8') as outfile:
+        for dirpath, _, filenames in os.walk(root_path):
+            # Filter for Python files only
+            py_files = [f for f in filenames if f.endswith('.py')]
+            if not py_files:
+                continue
+                
+            # Get relative path and format as specified
+            rel_path = Path(dirpath).relative_to(root_path)
+            path_parts = rel_path.parts
+            
+            for py_file in py_files:
+                file_path = Path(dirpath) / py_file
+                # Write formatted path
+                formatted_path = f"# [{'/'.join(path_parts)}]/{py_file}" if path_parts != ('.',) else f"# {py_file}"
+                outfile.write(f"{formatted_path}\n")
+                
+                # Write file contents
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as infile:
+                        content = infile.read()
+                        outfile.write(f"{content}\n\n")
+                except Exception as e:
+                    outfile.write(f"# Error reading {file_path}: {str(e)}\n\n")
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 2: 
+        project_dir = sys.argv[1] 
+    else: 
+        project_dir = "."
+
+    if len(sys.argv) >= 3: 
+        output_file = sys.argv[2] 
+    else: 
+        output_file = "paia.txt"
+
+    
+    if not os.path.isdir(project_dir):
+        print(f"Error: {project_dir} is not a valid directory")
+        sys.exit(1)
+        
+    export_project_to_file(project_dir, output_file)
+    print(f"Project exported to {output_file}")
+
+# []/main.py
+# server.py
+import argparse
+import http.server
+import socket
+import threading
+import time
+
+from paia import *
+
+
+class PAIAApplication:
+    def __init__(self):
+        PAIALogger().info("PAIAApplication Start")
+        self.servers = {}
+        self.ui_server_thread = None
+        self.service_server_thread = None
+        parser=argparse.ArgumentParser()
+        parser.add_argument("--ui-autostart",required=False, choices=[True,False], dest='ui_autostart', type=bool, help='Automatically start User interface service')
+        self.args=parser.parse_args()
+        
+    def __getCurrentThread(self):
+        return threading.current_thread()
+        
+    def port_available(self, ip : str, port : int) -> bool:
+        res = False
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # TCP
+            #sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+            sock.settimeout(2)
+            result = sock.connect_ex((ip,port))
+            PAIALogger().debug(f"Port test: {result}")       
+            if result == 0:
+                PAIALogger().debug(f"Port is open")            
+                res = True
+            sock.close()
+        except Exception as e:
+            PAIALogger().debug(f"{str(e)}")
+            res = True 
+        return res
+            
+    def run_server(self,id:str, host :str = "localhost", port :int = 8000, server : type = http.server.ThreadingHTTPServer, handler: type = http.server.BaseHTTPRequestHandler, description : str = "Default server" ,retry_count :int = 3,retry_wait : int = 10):
+        # Check if available
+        ok = False
+        retry_count_current = 0
+        retry_str = ""
+        while retry_count_current < retry_count and not ok:
+            retry_count_current = retry_count_current + 1
+            retry_str = f"Retry ({retry_count_current})" if retry_count_current > 0 else ""
+            if not self.port_available(host, port):
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : Port is in use {host}:{port} {retry_str}")
+            else:
+                PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : Port free {host}:{port} {retry_str}")
+                
+            # Start 
+            try:
+                with server((host, port), handler) as srv:
+                    if not srv in self.servers:
+                        self.servers[id] = srv
+                    PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] : Run server - Server[{description}] running at http://{host}:{port}")
+                    ok = True
+                    srv.serve_forever()    
+            except:
+                ok = False        
+
+            time.sleep(retry_wait)
+
+        if not ok:
+            PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Run server - [{description}] : {host}:{port} {retry_str}   - FAILED!!!")
+            
+
+
+    def ui_server(self):  
+        self.run_server(
+            id="ui",
+            host=PAIAConfig().ui_host,
+            port=PAIAConfig().ui_port,
+            server=PAIAUIServer,
+            handler=PAIAUIHandler,
+            description="UI Server"
+        )
+ 
+    
+    def service_server(self):
+        self.run_server(
+            id="service",
+            host="0.0.0.0",
+            port=PAIAConfig().port,
+            server=PAIAServiceServer,
+            handler=PAIAServiceHandler,
+            description="Service Server"
+        )
+
+    def run(self):
+        if PAIAConfig().getConfig().get("ui",{}).get("autostart",True):
+            self.ui_server_thread = threading.Thread(target=self.ui_server, name="UI Thread",)
+            self.ui_server_thread.start()
+        self.service_server_thread = threading.Thread(target=self.service_server, daemon=True,name="Service Thread")
+        self.service_server_thread.start()
+        while True:
+            time.sleep(1)
+    
+    def __del__(self):
+        PAIALogger().info("PAIAApplication Shutting down")
+        for server in self.servers:
+            PAIALogger().info(f"Thread[{self.__getCurrentThread().name}] Shutting down server {id} {str(server)}")
+            self.servers[server].server_close()
+        
+        
+if __name__ == "__main__":
+    try:
+        app = PAIAApplication()
+        app.run()
+    except KeyboardInterrupt:
+        app.__del__()
+
+
+
+# []/test.py
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import logging
+from datetime import datetime
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class StreamableChatBot:
+    def __init__(self, model_id="gpt2"):
+        """Initialize the chatbot with a specified model and conversation history."""
+        self.model_id = "UnfilteredAI/NSFW-3B"
+        self.model = None
+        self.tokenizer = None
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.history = []  # List to store conversation history
+        self.max_history_length = 10  # Limit history to last 5 exchanges
+        self.load_model()
+
+    def load_model(self):
+        """Load the pre-trained model and tokenizer."""
+        try:
+            logger.info(f"Loading model: {self.model_id}")
+           # self.model = AutoModelForCausalLM.from_pretrained(
+           #     self.model_id,
+           #     use_safetensors=True,trust_remote_code=True
+           # ).to(self.device)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id,use_safetensors=True,trust_remote_code=True)
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+            logger.info("Model and tokenizer loaded successfully")
+        except Exception as e:
+            logger.error(f"Failed to load model {self.model_id}: {str(e)}")
+            raise
+
+    def add_to_history(self, user_input, response):
+        """Add a user input and bot response to the conversation history."""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.history.append({"timestamp": timestamp, "user": user_input, "bot": response})
+        # Keep only the last max_history_length exchanges
+        if len(self.history) > self.max_history_length:
+            self.history = self.history[-self.max_history_length:]
+        logger.debug(f"Updated history: {self.history}")
+
+    def get_history_context(self):
+        """Build a context string from the conversation history."""
+        context = ""
+        for entry in self.history:
+            context += f"User: {entry['user']}\nBot: {entry['bot']}\n"
+        return context
+
+    def generate_streaming_response(self, user_input, max_length=100, temperature=0.7):
+        """Generate a streaming response to the user input, incorporating history."""
+        if not user_input.strip():
+            logger.error("No input provided")
+            yield {"error": "Please provide a valid input"}
+            return
+
+        try:
+            # Build prompt with history and current input
+            context = self.get_history_context()
+            prompt = f"{context}User: {user_input}\nBot: "
+            input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
+            attention_mask = torch.ones(input_ids.shape, dtype=torch.long).to(self.device)
+
+            # Generate response in streaming mode
+            self.model.eval()
+            generated_ids = input_ids
+            generated_text = ""
+            with torch.no_grad():
+                for step in range(max_length + input_ids.shape[1]):
+                    outputs = self.model(generated_ids, attention_mask=attention_mask, max_new_tokens=1 + input_ids.shape[1],stop_strings=["Bot","\n"],generate_full_text=False)
+                    next_token_logits = outputs.logits[:, -1, :]
+                    next_token_id = torch.argmax(next_token_logits, dim=-1).unsqueeze(-1)
+                    generated_ids = torch.cat((generated_ids, next_token_id), dim=1)
+                    attention_mask = torch.cat((attention_mask, torch.ones((1, 1), dtype=torch.long).to(self.device)), dim=1)
+
+                    # Decode the new token
+                    new_token = self.tokenizer.decode(next_token_id[0], skip_special_tokens=True)
+                    if new_token in ["Bot","User"]:
+                        break
+                    if new_token:
+                        generated_text += new_token
+                        logger.debug(f"Streaming token: {new_token}")
+                        yield {"result": generated_text}
+
+                    # Stop if EOS token is reached
+                    if next_token_id.item() == self.tokenizer.eos_token_id:
+                        logger.info("EOS token reached")
+                        break
+
+            # Add final response to history
+            self.add_to_history(user_input, generated_text.strip())
+
+        except Exception as e:
+            logger.error(f"Error generating streaming response: {str(e)}")
+            yield {"error": f"Streaming response failed: {str(e)}"}
+
+    def display_history(self):
+        """Display the conversation history."""
+        if not self.history:
+            print("No conversation history yet.")
+            return
+        print("\n--- Conversation History ---")
+        for entry in self.history:
+            print(f"[{entry['timestamp']}] User: {entry['user']}")
+            print(f"[{entry['timestamp']}] Bot: {entry['bot']}")
+        print("---------------------------\n")
+
+def main():
+    """Main function to run the chatbot in a command-line interface with streaming."""
+    chatbot = StreamableChatBot(model_id="Novaciano/NSFW-AMEBA-3.2-1B")  # Change to "Novaciano/NSFW-AMEBA-3.2-1B" if desired
+    print("Welcome to the Streamable ChatBot! Type 'quit' to exit or 'history' to view conversation history.")
+
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == 'quit':
+            print("Goodbye!")
+            break
+        elif user_input.lower() == 'history':
+            chatbot.display_history()
+            continue
+
+        print("Bot: ", end="", flush=True)
+        full_response = ""
+        for response in chatbot.generate_streaming_response(user_input):
+            if "error" in response:
+                print(f"\nError: {response['error']}")
+                break
+            new_text = response["result"][len(full_response):]
+            print(new_text, end="", flush=True)
+            full_response = response["result"]
+        print()  # Newline after streaming completes
+
+if __name__ == "__main__":
+    main()
+
+# []/test2.py
+from transformers import pipeline
+
+# Inicializace pipeline pro generování textu
+chatbot = pipeline("text-generation", model="TheBloke/Wizard-Vicuna-13B-Uncensored-SuperHOT-8K-GPTQ",device="cuda")
+
+# Správa historie ručně
+def chat_with_history():
+    history = []
+    print("Začněte konverzaci (napište 'konec' pro ukončení):")
+    
+    while True:
+        user_input = input("Vy: ")
+        if user_input.lower() == "konec":
+            break
+        
+        # Přidání uživatelského vstupu do historie
+        history.append(f"User: {user_input}")
+        
+        # Převedení historie na textový řetězec
+        prompt = "\n".join(history) + "\nBot: "
+        
+        # Generování odpovědi
+        response = chatbot(prompt, num_return_sequences=1, pad_token_id=chatbot.tokenizer.eos_token_id)
+        bot_response = response[0]["generated_text"].split("Bot: ")[-1].strip()
+        
+        print(f"Bot: {bot_response}")
+        
+        # Přidání odpovědi bota do historie
+        history.append(f"Bot: {bot_response}")
+        
+        # Volitelné: Zobrazení historie
+        print(f"Historie: {history}")
+
+if __name__ == "__main__":
+    chat_with_history()
+
+# [paia]/config.py
+# ai/PAIAConfig().py
+import os
+import json
+from .singleton import PAIASingleton
+
+class PAIAConfig(metaclass=PAIASingleton):
+    DEFAULT_CONFIG =  {
+    "server": {"host": "localhost", "port": 8000},
+    "ui": {"directory": "ui","host":"localhost","port":8080,"autostart":True},
+    "logging": {"level": "DEBUG", "dir": ".", "file_name":"app.log"},
+    "services": {
+        "translate": {"enabled": True, "streamable": False, "parameters": []},
+        "text-generator": {"enabled": True, "streamable": False, "parameters": []}
+        },
+    "is_default": True
+    }
+    config = DEFAULT_CONFIG
+    host = "localhost"
+    port = 8000
+    ui_dir = "ui"
+    logging_level = "DEBUG"
+    logging_dir = "."
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.abspath(os.path.join(base_dir,".."))
+    config_file = os.path.abspath(os.path.join(base_dir,"..","config.json"))
+    
+
+    def __init__(self, config_file: str = None):
+        self.configLoaded = False
+        self.__loadConfig(config_file)
+       
+    def getDefault(self):
+        return self.DEFAULT_CONFIG
+    
+    def getConfig(self):
+        self.__loadConfig()
+        return self.config
+
+    def update(self, config_file: str = None):
+        self.__loadConfig(config_file)
+        return self.config
+
+    def getUIDirectory(self ,ui_dir :str = None) -> str:
+        return os.path.join(self.root_dir,ui_dir if ui_dir else self.ui_dir)
+    
+    def getUIAddress(self,ui_dir :str = None) -> str:
+        return f"http://{self.ui_host}:{self.ui_port}"
+
+
+    def __loadConfig(self, config_file: str = None, force_reload : bool = False) -> bool:  
+        # File changed - force reload automatically 
+        if config_file and config_file != self.config_file:
+            self.configLoaded = False
+            self.config_file = config_file
+        # Force reload from file 
+        if force_reload:
+            self.configLoaded = False
+        
+        # If actual , return
+        if self.configLoaded:
+            return self.config
+        
+        # Load config from file
+        res = False
+        try:
+            print(f"Attempting to load config from: {self.config_file}")
+            if not os.path.exists(self.config_file):
+                print(f"Config file does not exist at: {self.config_file}")
+                raise FileNotFoundError
+            with open(self.config_file, "r") as f:
+                self.config = json.load(f)
+            res = True
+        except FileNotFoundError:
+            print(f"PAIAConfig().json not found at {self.config_file}, using defaults")
+        except (KeyError, json.JSONDecodeError) as e:
+            print(f"Invalid PAIAConfig().json at {self.config_file}: {str(e)}, using defaults")
+        except PermissionError as e:
+            print(f"Permission denied for PAIAConfig().json at {self.config_file}: {str(e)}, using defaults")
+        
+        if not res:
+            self.config = self.getDefault()
+            self.config_file = None
+            print("Loading default config ( file not found or error )")
+                
+        self.__populateFromJSON(self.config)
+        print(f"Loaded config: host={self.host}, port={self.port}, ui_dir={self.ui_dir}, logging_level={self.logging_level}, logging_dir={self.logging_dir}")
+
+        # Load service-specific configs, overriding matching nodes
+        service_dir = os.path.join(self.base_dir, "service")
+        for service_name in self.config.get("services", {}):
+            service_config_path = os.path.join(service_dir, f"{service_name.replace('-', '_')}.json")
+            try:
+                print(f"Attempting to load service config from: {service_config_path}")
+                if os.path.exists(service_config_path):
+                    with open(service_config_path, "r") as f:
+                        service_config = json.load(f)
+                        # Update global config with service-specific values
+                        self._merge_service_config(service_name, self.config["services"], service_config)
+                        print(f"Updated service config for {service_name}: {self.config['services'][service_name]}")
+                else:
+                    print(f"No service config found for {service_name} at {service_config_path}")
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"Invalid service config at {service_config_path}: {str(e)}")
+            except PermissionError as e:
+                print(f"Permission denied for service config at {service_config_path}: {str(e)}")
+        
+        self.configLoaded = True
+        return True
+
+    def __populateFromJSON(self, config: json):
+        self.config = config
+        self.host = self.config.get("server",{}).get("host","localhost")
+        self.port =  int(self.config.get("server",{}).get("port",8000))
+        self.ui_dir = self.config.get("ui",{}).get("directory","ui")
+        self.ui_host = self.config.get("ui",{}).get("host","localhost")
+        self.ui_port =  int(self.config.get("ui",{}).get("port",8080))
+        self.logging_level = self.config.get("logging",{}).get("level","DEBUG")
+        self.logging_dir = self.config.get("logging",{}).get("dir","localhost")
+
+
+
+    def _merge_service_config(self, service_name ,global_config, service_config):
+        """ Autocreate in global config """
+        if not global_config.get(service_name):
+            global_config.set(service_name, {})
+
+        """Recursively update global_config with service_config values."""
+        for key, value in service_config.items():
+            if isinstance(value, dict) and key in global_config[service_name] and isinstance(global_config[service_name][key], dict):
+                self._merge_service_config(global_config[service_name][key], value)
+            else:   
+                global_config[service_name][key] = value
+
+
+# [paia]/logger.py
+# ai/logger.py
+import logging
+import logging.handlers
+import os
+import json
+
+from paia import PAIASingleton
+
+class PAIALogger(metaclass=PAIASingleton):
+
+    config_default = {"level": "DEBUG", "dir": ".", "file_name":"app.log"}
+
+    def __init__(self):
+        self.loggerLoaded = False
+        self.logger = None
+        self.__populateFromConfig(self.config_default)
+        
+    def __populateFromConfig(self, config:json = None):
+        if config:
+            self.logging_dir = config.get("dir",self.config_default.get("dir"))
+            self.logging_file = config.get("file_name",self.config_default.get("file_name"))
+            self.level = config.get("level",self.config_default.get("level"))
+            self.logging_fullpath = os.path.join(self.logging_dir,self.logging_file)
+            self.config = config
+        
+    
+    def __loadLogger(self, config:json = None):
+        if not self.loggerLoaded:
+            self.__populateFromConfig(config)
+            os.makedirs(self.logging_dir, exist_ok=True)
+            self.logger = logging.getLogger('PAIAService')
+            self.logger.setLevel(self.level)
+            # Clean handlers
+            if self.logger.hasHandlers():
+                for handler in self.logger.handlers:
+                    self.logger.removeHandler(handler)
+            # Recreat handlers on load/reload
+            handler = logging.handlers.RotatingFileHandler(self.logging_fullpath, maxBytes=5*1024*1024, backupCount=3)
+            handler.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s] %(levelname)s: %(message)s'))
+            self.logger.addHandler(handler)
+            console = logging.StreamHandler()
+            console.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s] %(levelname)s: %(message)s'))
+            self.logger.addHandler(console)
+            self.loggerLoaded = True
+        return self.logger
+    
+    def update(self, config:json = None):
+        self.loggerLoaded = False
+        return self.__loadLogger(config)
+
+    def getLogger(self):
+        return self.__loadLogger()
+
+    def info(self, val):
+        return self.__loadLogger().info(val)
+
+    def warning(self, val):
+        return self.__loadLogger().warning(val)    
+
+    def error(self, val):
+        return self.__loadLogger().error(val)
+
+    def debug(self, val):
+        return self.__loadLogger().debug(val)
+
+# [paia]/singleton.py
+# ai/singleton.py
+class PAIASingleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(PAIASingleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+# [paia]/__init__.py
+# ai/__init__.py
+__all__ = [
+    "PAIASingleton",
+    "PAIAConfig",
+    "PAIALogger",
+    "PAIAService",
+    "PAIAServiceManager", 
+    "PAIAServiceServer","PAIAServiceHandler","PAIAUIServer","PAIAUIHandler", # ui server
+]
+
+from .singleton import PAIASingleton
+from .config import PAIAConfig
+from .logger import PAIALogger
+from .service.service import PAIAService
+from .service.manager import PAIAServiceManager 
+from .server import PAIAServiceServer, PAIAServiceHandler, PAIAUIServer, PAIAUIHandler
+
+
+
+
+# [paia/server]/service.py
+import socketserver
+import http
+import json
+import http.server
+
+from paia import PAIALogger,PAIAConfig,PAIAServiceManager
+
+# Server
+class PAIAServiceServer(socketserver.ThreadingTCPServer):
+    pass
+
+class PAIAServiceHandler(http.server.BaseHTTPRequestHandler):
+    ## REST API
+    def do_GET(self):
+        PAIALogger().debug(f"GET request: {self.path}")
+        if self.path == "/services":
+            services = PAIAServiceManager().get_services(as_str=True)
+            PAIALogger().info(f"Returning services: {services}")
+            self.__send_response(200, {"services": services["services"]})
+            
+        elif self.path == "/config":
+            try:
+                PAIALogger().info("Returning config")
+                self.__send_response(200, PAIAConfig().getConfig())
+            except:
+                PAIALogger().error(f"Permission denied for config file : {PAIAConfig().config_file}")
+                self.__send_error(500, "Permission denied for config file")
+        else:
+            PAIALogger().warning(f"Unknown path: {self.path}")
+            self.__send_error(404, "Not found")
+    ## SERVICE API
+    def do_POST(self):
+        try:
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            request_data = json.loads(post_data)
+            PAIALogger().debug(f"Received POST: {request_data}")
+
+            service_name = request_data.get("service")
+            query = request_data.get("query", {})
+            stream = request_data.get("stream", False)
+            if not service_name:
+                PAIALogger().error("Missing service name")
+                self.__send_error(400, "Service name is required")
+                return
+            if not PAIAConfig().getConfig().get("services", {}).get(service_name, {}).get("enabled", True):
+                PAIALogger().warning(f"Service disabled: {service_name}")
+                self.__send_error(403, f"Service '{service_name}' is disabled")
+                return
+            service = PAIAServiceManager().get_service(service_name)
+            if not service:
+                PAIALogger().error(f"Service not found: {service_name}")
+                self.__send_error(404, f"Service '{service_name}' not found")
+                return
+            PAIALogger().info(f"Processing {service_name}, stream={stream}")
+            if stream:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream")
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("Connection", "keep-alive")
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                try:
+                    for result in service.process(query):
+                        event_data = json.dumps(result)
+                        PAIALogger().debug(f"Sending SSE event: {event_data}")
+                        self.wfile.write(f"data: {event_data}\n\n".encode('utf-8'))
+                        self.wfile.flush()
+                except Exception as e:
+                    event_data = json.dumps({"error": f"Streaming error: {str(e)}"})
+                    PAIALogger().error(f"Streaming error: {event_data}")
+                    self.wfile.write(f"data: {event_data}\n\n".encode('utf-8'))
+                    self.wfile.flush()
+            else:
+                PAIALogger().info(f"Non-streaming for: {service_name}")
+                for result in service.process(query):
+                    self.__send_response(200, result)
+                    break
+        except json.JSONDecodeError:
+            PAIALogger().error("Invalid JSON payload")
+            self.__send_error(400, "Invalid JSON payload")
+        except Exception as e:
+            PAIALogger().error(f"Server error: {str(e)}")
+            self.__send_error(500, f"Server error: {str(e)}")
+
+    def do_OPTIONS(self):
+        PAIALogger().debug("OPTIONS request")
+        self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+    
+    def __send_response(self, status, data):
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(json.dumps(data).encode('utf-8'))
+        PAIALogger().debug(f"Sent response: status={status}, data={data}")
+
+    def __send_error(self, status, message):
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(json.dumps({"error": message}).encode('utf-8'))
+        PAIALogger().error(f"Sent error: status={status}, message={message}")
+
+# [paia/server]/ui.py
+# UI Server
+import socketserver
+import http
+
+from paia import PAIAConfig
+
+class PAIAUIServer(socketserver.ThreadingTCPServer):
+    pass
+
+class PAIAUIHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs, directory=PAIAConfig().ui_dir)
+
+
+# [paia/server]/__init__.py
+__all__ = ["PAIAServiceServer","PAIAServiceHandler","PAIAUIServer","PAIAUIHandler"]
+
+from .service import PAIAServiceServer, PAIAServiceHandler
+from .ui import PAIAUIServer, PAIAUIHandler
+
+# [paia/service]/chat.py
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from datetime import datetime
+from paia import PAIAService,PAIALogger
+
+logger = PAIALogger()
+
+class Chat(PAIAService):
+    def __init__(self, model_id="Heartsync/NSFW-Uncensored"):
+        """Initialize the chatbot with a specified model and conversation history."""
+        self.model_id = model_id
+        self.model = None
+        self.tokenizer = None
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.history = []  # List to store conversation history
+        self.max_history_length = 50  # Limit history to last 5 exchanges
+
+    def load_model(self):
+        if self.model:
+            return
+        """Load the pre-trained model and tokenizer."""
+        try:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_id, 
+                torch_dtype=torch.bfloat16 if self.device == "cuda" else torch.float32
+            ).to(self.device)
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+            self.history_pipe = pipeline("summarization",model=self.model,tokenizer=self.tokenizer)
+        except Exception as e:
+            raise
+
+    def add_to_history(self, user_input, response):
+        self.load_model()
+        """Add a user input and bot response to the conversation history."""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.history.append({"timestamp": timestamp, "user": user_input, "bot": response})
+        # Keep only the last max_history_length exchanges
+        if len(self.history) > self.max_history_length:
+            self.history = self.history_pipe(self.get_history_context())[0]["summary"]
+
+    def get_history_context(self):
+        """Build a context string from the conversation history."""
+        context = ""
+        for entry in self.history:
+            context += f"User: {entry['user']}\nBot: {entry['bot']}\n"
+        return context
+
+    def process(self,query):
+        self.load_model()
+        """Generate a response to the user input, incorporating history."""
+        user_input = query.get("text","")
+        max_length = int(query.get("max_length",50))
+        max_tokens=max_length
+        temperature=0.8
+
+        if not user_input.strip():
+            return "Please provide a valid input."
+        
+        try:
+            # Build prompt with history and current input
+            context = self.get_history_context()
+            prompt = f"{context}User: {user_input}\nBot: "
+            input_ids = self.tokenizer.encode(prompt, return_tensors="pt").to(self.device)
+            attention_mask = torch.ones(input_ids.shape, dtype=torch.long).to(self.device)
+
+            # Generate response in streaming mode
+            self.model.eval()
+            generated_ids = input_ids
+            generated_text = ""
+            with torch.no_grad():
+                for step in range(max_length + input_ids.shape[1]):
+                    outputs = self.model(generated_ids,is_assistant=True, attention_mask=attention_mask, max_new_tokens=1 + input_ids.shape[1],stop_strings=["Bot","\n"],generate_full_text=False)
+                    next_token_logits = outputs.logits[:, -1, :]
+                    next_token_id = torch.argmax(next_token_logits, dim=-1).unsqueeze(-1)
+                    generated_ids = torch.cat((generated_ids, next_token_id), dim=1)
+                    attention_mask = torch.cat((attention_mask, torch.ones((1, 1), dtype=torch.long).to(self.device)), dim=1)
+
+                    # Decode the new token
+                    new_token = self.tokenizer.decode(next_token_id[0], skip_special_tokens=True)
+                    if new_token in ["Bot","User"]:
+                        break
+                    if new_token:
+                        generated_text += new_token
+                        logger.debug(f"Streaming token: {new_token}")
+                        yield {"result": generated_text}
+
+                    # Stop if EOS token is reached
+                    if next_token_id.item() == self.tokenizer.eos_token_id:
+                        logger.info("EOS token reached")
+                        break
+
+            # Add final response to history
+            self.add_to_history(user_input, generated_text)
+
+        except Exception as e:
+            logger.error(f"Error generating streaming response: {str(e)}")
+            yield {"error": f"Streaming response failed: {str(e)}"}
+
+    def display_history(self):
+        """Display the conversation history."""
+        if not self.history:
+            print("No conversation history yet.")
+            return
+        print("\n--- Conversation History ---")
+        for entry in self.history:
+            print(f"[{entry['timestamp']}] User: {entry['user']}")
+            print(f"[{entry['timestamp']}] Bot: {entry['bot']}")
+        print("---------------------------\n")
+
+
+
+# [paia/service]/manager.py
+import threading
+import importlib
+import inspect
+import os
+
+from paia import PAIASingleton,PAIALogger,PAIAConfig,PAIAService
+
+class PAIAServiceManager(metaclass=PAIASingleton):
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._service_names : dict[str] = {}
+        self._service_registry : dict[type] = {}
+        self._service_instances : dict[PAIAService] = {}
+        self._services_loaded : bool = False
+
+    def get_services(self, as_str : bool = False): 
+        if not self._services_loaded:
+            self._load_services()
+        
+        if as_str:
+            return self._service_names
+        
+        return self._service_registry
+        
+    def get_service(self, service_name: str) -> PAIAService | None:
+        if not self._services_loaded:
+            self._load_services()
+        result = None
+        try:
+            self._lock.acquire()
+            service_class = self._service_registry[service_name]
+            if service_class:
+                if not service_name in self._service_instances:
+                    PAIALogger().debug(f"Adding service: {service_name}")
+                    self._service_instances[service_name] = service_class()
+                result = self._service_instances[service_name]
+        except Exception as e:
+            PAIALogger().error(f"{str(e)}")
+        if self._lock.locked():
+            self._lock.release()
+        if result:
+            return result
+
+        PAIALogger().error(f"Service not found: {service_name}")
+        return None
+    
+    def _load_services(self) -> bool:
+        if self._services_loaded:
+            return True
+        try:
+            self._lock.acquire()
+            service_dir = os.path.dirname(__file__)       
+            self._service_names["services"] = []             
+            for filename in os.listdir(service_dir):
+                if filename.endswith(".py") and filename not in ["__init__.py", "service.py","manager.py"]:
+                    module_name = filename[:-3]
+                    service_name = module_name.replace("_", "-")
+                    is_enabled = PAIAConfig().getConfig().get("services", {}).get(service_name, {}).get("enabled", True)
+                    if not is_enabled:
+                        PAIALogger().getLogger().info(f"Skipping disabled service: {service_name}")
+                        continue
+                    try:
+                        module = importlib.import_module(f"paia.service.{module_name}")
+                        for _,module_obj in inspect.getmembers(module, inspect.isclass):
+                            if issubclass(module_obj, PAIAService) and module_obj != PAIAService:
+                                PAIALogger().info(f"Loading service: {service_name}")
+                                self._service_names["services"].append(service_name)
+                                self._service_registry[service_name] = module_obj
+                                PAIALogger().info(f"Loaded service: {service_name}")
+                    except ImportError as e:
+                        PAIALogger().error(f"Error importing {module_name}: {str(e)}")
+                    except Exception as e:
+                        PAIALogger().error(f"Error loading {service_name}: {str(e)}")
+        except Exception as e:
+            PAIALogger().error(f"Error loading {service_name}: {str(e)}")
+            # Loaded ok        
+        if self._lock.locked(): self._lock.release()
+        self._services_loaded = True
+        return True
+
+
+# [paia/service]/service.py
+from paia import PAIAConfig, PAIALogger
+
+# Service interface / abstract class 
+class PAIAService:
+    def __init__(self):
+        self.config = PAIAConfig()
+        self.logger = PAIALogger()
+
+    def process(self, query):
+        raise NotImplementedError("Subclasses must implement process method")
+
+
+
+# [paia/service]/text_to_image.py
+# ai/service/text_generator.py
+from diffusers import DiffusionPipeline
+from paia import *
+import os
+from pathlib import Path
+import torch
+import time
+
+class TextToImageService(PAIAService):
+    def __init__(self):
+        self.modelLoaded = False
+
+    def loadModel(self):
+        try:
+            model_id ="Heartsync/NSFW-Uncensored"
+            PAIALogger().info(f"Loading model : {model_id}")
+            self.imager = DiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16,use_safetensors=True ).to("cuda")
+
+            PAIALogger().info(f"Model {model_id} LOADED")
+            self.modelLoaded = True
+        except Exception as e:
+            PAIALogger().error(f"Failed to load model: {str(e)}")
+            raise
+
+    def process(self, query):
+        if not self.modelLoaded:
+            self.loadModel()
+        prompt = query.get("text", "")
+        height = int(query.get("height", 256))
+        width = int(query.get("width", 256))
+        output_path = os.path.join(PAIAConfig().getUIDirectory(),"image")
+        output_addr = f"{PAIAConfig().getUIAddress()}/image/"
+        guidance_scale = float(query.get("guidance_scale", 6.3))
+        num_inference_steps = int(query.get("num_inference_steps", 10))
+        negative_prompt = query.get("negative_prompt", "ugly, deformed, disfigured, poor quality, low resolution")
+        PAIALogger().debug(f"Processing query: prompt='{prompt}', height={height}, width={width}, guidance_scale={guidance_scale}, num_inference_steps={num_inference_steps}, negative_prompt='{negative_prompt}'")
+
+        if not prompt:
+            PAIALogger().error("No prompt provided")
+            yield {"error": "No prompt provided for image generation"}
+            return
+
+        try:
+            # Create sage image name and path
+            safe_prompt = time.strftime("%H-%M-%S")
+            if not safe_prompt:
+                safe_prompt = "image"
+            image_path = f"{output_path}/{safe_prompt}.png"
+            image_addr = f"{output_addr}/{safe_prompt}.png"
+
+            # Auto create image directory
+            output_dir = Path(output_path)
+            output_dir.mkdir(parents=True,exist_ok=True)
+
+            # Generate image
+            result = self.imager(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                num_inference_steps=num_inference_steps,
+                guidance_scale=guidance_scale,
+                width=width,
+                height=height,
+                
+
+            )["images"][0]
+
+            # Save image
+            result.save(image_path)
+
+            # Return result
+            yield {"result": image_addr, "type": "image", "image_path":image_path}
+
+        except Exception as e:
+            PAIALogger().getLogger().error(f"Error in image generation: {str(e)}")
+            yield {"error": f"Image generation failed: {str(e)}"}
+
+        PAIALogger().debug("End thread")
+
+# [paia/service]/text_to_speech.py
+# ai/service/text_generator.py
+from transformers import pipeline
+from paia import *
+import os
+from pathlib import Path
+from gtts import gTTS
+
+class TextToSpeechService(PAIAService):
+    def __init__(self):
+        self.modelLoaded = False
+
+    def loadModel(self):
+        pass
+
+    def process(self, query):
+        prompt = query.get("text", "")
+        lang = query.get("lang", "cs")
+        output_path = os.path.join(PAIAConfig().getUIDirectory(),"sound")
+        output_addr = f"{PAIAConfig().getUIAddress()}/sound/"
+        PAIALogger().debug(f"Processing query: prompt='{prompt}'")
+
+        if not prompt:
+            PAIALogger().error("No prompt provided")
+            yield {"error": "No prompt provided for image generation"}
+            return
+
+        try:
+            safe_prompt = "".join(c for c in prompt if c.isalnum() or c in " _-").strip()[:50]
+            if not safe_prompt:
+                safe_prompt = "sound"
+                
+            res_path = f"{output_path}/{safe_prompt}.mp3"
+            res_addr = f"{output_addr}/{safe_prompt}.mp3"
+
+            path = Path(output_path)
+            path.mkdir(exist_ok=True,parents=True)
+
+            result = gTTS(text=prompt, slow=False, lang=lang)
+            result.save(res_path)
+            
+            PAIALogger().info(f"Generated sound: {res_addr}")
+            yield {"result": res_addr, "type": "audio"}
+
+        except Exception as e:
+            PAIALogger().error(f"Error in image generation: {str(e)}")
+            yield {"error": f"Image generation failed: {str(e)}"}
+
+        PAIALogger().debug("End thread")
+
+# [paia/service]/translate.py
+# ai/service/translate.py
+from transformers import pipeline
+from paia import PAIALogger,PAIAService
+
+logger = PAIALogger().getLogger()
+
+class TranslateService(PAIAService):
+    def __init__(self):
+        self.translators = {}
+
+    def process(self, query):
+        text = query.get("text", "")
+        source_language = query.get("source_language", "cs")
+        target_language = query.get("target_language", "en")
+        model_id = f"Helsinki-NLP/opus-mt-{source_language}-{target_language}"
+        logger.debug(f"Processing query: text='{text}', source_language='{source_language}', target_language='{target_language}'")
+
+        if not text:
+            logger.error("No text provided")
+            yield {"error": "No text provided for translation"}
+            return
+
+        try:
+            if model_id not in self.translators:
+                logger.info(f"Loading model: {model_id}")
+                self.translators[model_id] = pipeline("translation", model=model_id)
+            else:
+                logger.debug(f"Using cached model: {model_id}")
+
+            result = self.translators[model_id](text)[0]["translation_text"]
+            logger.info(f"Translation result: {result}")
+            yield {"result": result}
+
+        except Exception as e:
+            logger.error(f"Error in translation: {str(e)}")
+            yield {"error": f"Translation failed: {str(e)}"}
+
+        logger.debug("End thread")
+
+# [tests/paia]/test_build.py
+# tests/test_build_ui.py
+import os
+import pytest
+from paia import PAIAConfig
+
+@pytest.fixture
+def ui_dir(tmp_path):
+    ui_dir = tmp_path / "ui"
+    ui_dir.mkdir()
+    return ui_dir
+
+def test_build_ui_generation(ui_dir, dir_fix):
+    PAIAConfig().ui_dir = str(ui_dir)
+    from build_ui import build_ui
+    build_ui()
+    assert os.path.exists(ui_dir / "index.html")
+    assert os.path.exists(ui_dir / "styles.css")
+    assert os.path.exists(ui_dir / "script.js")
+    assert os.path.exists(ui_dir / "api.js")
+    with open(ui_dir / "index.html", encoding='utf-8') as f:
+        data = f.read()
+        assert data.find('data-theme="light"')
+        assert data.find('type="module"')
+
+
+# [tests/paia]/test_config.py
+# tests/test_config.py
+import pytest
+import json
+from paia import PAIAConfig
+
+@pytest.fixture(autouse=True,scope="function")
+def config_json(tmp_path):
+    config_file = tmp_path / "config.json"
+    config_data = {
+        "server": {"host": "localhost", "port": 8000},
+        "ui_dir": "ui",
+        "services": {"text-generator": {"streamable": True, "parameters": []}}
+    }
+    config_file.write_text(json.dumps(config_data))
+    return config_file
+
+@pytest.fixture(autouse=True,scope="function")
+def config_json_malformed(tmp_path):
+    config_file = tmp_path / "config_malformed.json"
+    config_file.write_text("{mal for mm;sdas meeet!")
+    return config_file
+
+
+@pytest.fixture(autouse=True,scope="function")
+def config_json_access(tmp_path):
+    config_file = tmp_path / "config_access.json"
+    config_file.write_text("test")
+    config_file.chmod(411)
+    return config_file
+
+
+def test_config_singleton():
+    config1 = PAIAConfig()
+    config2 = PAIAConfig()
+    assert config1 is config2, "CONFIG should be a singleton"
+
+def test_config_load(config_json):
+    config = PAIAConfig().update(config_file=str(config_json))
+    assert config["server"]["host"] == "localhost"
+    assert config["ui_dir"] == "ui"
+    assert config["services"]["text-generator"]["streamable"] is True
+
+def test_config_missing_file(tmp_path):
+    config = PAIAConfig().update(config_file=str(tmp_path / "missing.json"))
+    assert config.get("is_default", False) == True
+
+def test_config_malformed_file(config_json_malformed):
+    config = PAIAConfig().update(config_file=str(config_json_malformed))
+    assert config.get("is_default", False) == True
+
+def test_config_access_file(config_json_access):
+    config = PAIAConfig().update(config_file=str(config_json_access))
+    assert config.get("is_default", False) == True
+
+def test_config_ui_dir(config_json):
+    PAIAConfig().update(config_file=str(config_json))
+    assert PAIAConfig().ui_dir == "ui"
+
+# [tests/paia]/test_logger.py
+# tests/test_logger.py
+import os
+import logging
+from paia import PAIALogger
+
+def test_logger_singleton(dir_fix):
+    logger1 = PAIALogger()
+    logger2 = PAIALogger()
+    assert logger1 is logger2, "LOGGER should be a singleton"
+
+def test_logger_initialization(tmp_path,dir_fix):
+    log_dir = tmp_path / "logs"
+    logger = PAIALogger().update(config = {"level": logging.INFO, "dir": str(log_dir)})
+    assert logger.level == logging.INFO
+    assert os.path.exists(log_dir / "app.log")
+
+def test_logger_write(tmp_path,dir_fix):
+    log_dir = tmp_path / "logs"
+    logger = PAIALogger().update(config = {"level": logging.DEBUG, "dir": str(log_dir)})
+    assert logger.level == logging.DEBUG
+    logger.info("Test message")
+    with open(os.path.join(str(log_dir), "app.log")) as f:
+        assert "Test message" in f.read()
+
+# [tests/paia]/test_singleton.py
+from paia import PAIASingleton
+
+class SingletonTestClass(metaclass=PAIASingleton):
+    def __init__(self, value = int | None):
+        self.value = value
+        
+
+def test_singleton_behavior():
+    instance1 = SingletonTestClass(value=1)
+    instance2 = SingletonTestClass(value=2)
+    assert instance1 is instance2, "Instances should be the same"
+    assert instance1.value == 1, "Value should not change"
+
+# [tests/paia/service]/test_text_to_image.py
+import os
+import json 
+from paia import *
+
+PAIAConfig().update(PAIAConfig().base_dir+'/config.json')
+PAIALogger().update({"level":"DEBUG"})
+
+class MockRequest():
+    def __init__(self, data:json = None):
+        self.mockData = data
+
+    def get(self, name, default:str = None):
+        return self.mockData.get(name,default)
+
+def mock_query(mock_data:json,mock_service:str):    
+    service_manager = PAIAServiceManager()
+    service = service_manager.get_service(mock_service)  
+    mock_request_image = MockRequest(mock_data)
+    
+    yield lambda: result
+    result =  yield from service.process(mock_request_image)
+    assert result["type"] == "image"
+
+def test_text_to_image(tmp_path):
+    log_dir = tmp_path / "logs"
+    os.mkdir(str(log_dir))
+    with open(os.path.join(str(log_dir),"app.log"), 'w', encoding='utf-8') as f:
+        f.write("kunda")
+    mock_query(mock_data={"text":"Test mock","height":"256","width":"256","output_path":str(log_dir),"stream":False},mock_service="text-to-image")
+
+def test_text_to_image_empty_input():
+    mock_query({"text": "","stream":False},mock_service="text-to-image")
+
+def test_text_to_image_invalid_image_size():
+    mock_query({"text": "Test","stream":False,"height":"asdasd"},mock_service="text-to-image")
+
+

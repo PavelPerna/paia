@@ -1,9 +1,7 @@
 # tests/test_logger.py
-import pytest
 import os
 import logging
-import json
-from ai import PAIALogger, PAIALogger
+from paia import PAIALogger
 
 def test_logger_singleton(dir_fix):
     logger1 = PAIALogger()

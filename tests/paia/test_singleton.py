@@ -1,12 +1,11 @@
-import pytest
-from ai import PAIASingleton
+from paia import PAIASingleton
 
 class SingletonTestClass(metaclass=PAIASingleton):
     def __init__(self, value = int | None):
         self.value = value
         
 
-def test_singleton_behavior(dir_fix):
+def test_singleton_behavior():
     instance1 = SingletonTestClass(value=1)
     instance2 = SingletonTestClass(value=2)
     assert instance1 is instance2, "Instances should be the same"

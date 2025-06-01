@@ -1,9 +1,6 @@
-import pytest
-import sys
 import os
 import json 
-from ai.microservice.base_service import load_services, get_service  # Assumed function
-from ai import PAIALogger, PAIAConfig
+from paia import *
 
 PAIAConfig().update(PAIAConfig().base_dir+'/config.json')
 PAIALogger().update({"level":"DEBUG"})
@@ -15,11 +12,9 @@ class MockRequest():
     def get(self, name, default:str = None):
         return self.mockData.get(name,default)
 
-load_services()
-
-
 def mock_query(mock_data:json,mock_service:str):    
-    service = get_service(mock_service)  
+    service_manager = PAIAServiceManager()
+    service = service_manager.get_service(mock_service)  
     mock_request_image = MockRequest(mock_data)
     
     yield lambda: result

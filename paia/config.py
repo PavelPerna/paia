@@ -23,6 +23,8 @@ class PAIAConfig(metaclass=PAIASingleton):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     root_dir = os.path.abspath(os.path.join(base_dir,".."))
     config_file = os.path.abspath(os.path.join(base_dir,"..","config.json"))
+    secret_file = os.path.abspath(os.path.join(base_dir,"..","secret.key"))
+    secret_key = ""
     
 
     def __init__(self, config_file: str = None):
@@ -69,6 +71,8 @@ class PAIAConfig(metaclass=PAIASingleton):
                 raise FileNotFoundError
             with open(self.config_file, "r") as f:
                 self.config = json.load(f)
+            with open(self.secret_file, "r") as f:
+                self.secret_key = f
             res = True
         except FileNotFoundError:
             print(f"PAIAConfig().json not found at {self.config_file}, using defaults")

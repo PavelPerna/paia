@@ -1,6 +1,6 @@
 # ai/service/translate.py
 from transformers import pipeline
-from paia import PAIALogger,PAIAService
+from paia import PAIALogger,PAIAService,PAIAConfig
 
 logger = PAIALogger().getLogger()
 
@@ -23,7 +23,7 @@ class TranslateService(PAIAService):
         try:
             if model_id not in self.translators:
                 logger.info(f"Loading model: {model_id}")
-                self.translators[model_id] = pipeline("translation", model=model_id)
+                self.translators[model_id] = pipeline("translation", model=model_id, token=PAIAConfig().secret_key)
             else:
                 logger.debug(f"Using cached model: {model_id}")
 

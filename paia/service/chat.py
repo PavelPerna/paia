@@ -6,7 +6,7 @@ from paia import PAIAService,PAIALogger
 logger = PAIALogger()
 
 class Chat(PAIAService):
-    def __init__(self, model_id="Heartsync/NSFW-Uncensored"):
+    def __init__(self, model_id="Novaciano/NSFW-AMEBA-3.2-1B"):
         """Initialize the chatbot with a specified model and conversation history."""
         self.model_id = model_id
         self.model = None

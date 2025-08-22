@@ -1,2 +1,2 @@
 call \env\Scripts\activate
-call python3 server.py
+call python3 main.py

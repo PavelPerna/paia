@@ -35,7 +35,7 @@ class TextToSpeechService(PAIAService):
             path = Path(output_path)
             path.mkdir(exist_ok=True,parents=True)
 
-            result = gTTS(text=prompt, slow=False, lang=lang)
+            result = gTTS(text=prompt, slow=False, lang=lang,tld="de")
             result.save(res_path)
             
             PAIALogger().info(f"Generated sound: {res_addr}")

@@ -12,6 +12,6 @@ RUN echo "[supervisord]\nnodaemon=true\n" > /app/supervisord.conf && \
     echo "[program:main]\ncommand=python3 main.py\n" >> /app/supervisord.conf && \
     echo "[program:httpserver]\ncommand=python3 -m http.server 8080 --directory /app/gui\n" >> /app/supervisord.conf
 
-EXPOSE 8080
+EXPOSE 8080 8888
 
 CMD ["supervisord", "-c", "/app/supervisord.conf"]

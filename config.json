@@ -5,13 +5,13 @@
         "file_name": "app.log"
     },
     "server": {
-        "host": "10.0.1.15",
+        "host": "0.0.0.0",
         "port": 8000
     },
     "ui": {
         "autostart": true,
         "directory": "ui",
-        "host": "10.0.1.15",
+        "host": "0.0.0.0",
         "port": 8080,
         "theme": "dark"
     },
